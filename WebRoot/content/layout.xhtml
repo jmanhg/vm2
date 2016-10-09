@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="support/templates/PlainTemplate.xhtml">
+
+	<ui:define name="pageName"></ui:define>
+
+	<ui:define name="content">
+		<f:view>
+			<p:layout fullPage="true">
+				<p:layoutUnit position="north" size="100" header="Menu"
+					resizable="true" closable="true" collapsible="true">
+					<h:form>
+						<!-- *********************************************************************** -->
+						<!-- **********************EJEMPLO DE UPDATE******************************** -->
+						<!-- *********************************************************************** -->
+						<h:panelGrid columns="4" cellpadding="5">
+							<h:outputLabel for="name" value="Name:" style="font-weight:bold" />
+
+							<p:inputText id="name" value="#{ajaxCoreMB.nombre}" />
+
+							<p:commandButton value="Submit" update="display" />
+
+							<h:outputText value="#{ajaxCoreMB.nombre}" id="display" />
+						</h:panelGrid>
+					</h:form>
+
+				</p:layoutUnit>
+				<p:layoutUnit position="south" size="100" header="Comentarios"
+					resizable="true" closable="true" collapsible="true">
+
+					<h:form>
+						<!-- *********************************************************************** -->
+						<!-- **********************EJEMPLO DE POLL********************************** -->
+						<!-- *********************************************************************** -->
+
+						<h:outputText id="txt_contador" value="Contador: " />
+						<h:outputText id="contador" value="#{ajaxCoreMB.numero}" />
+
+						<p:poll interval="3" listener="#{ajaxCoreMB.incrementar}"
+							update="contador" />
+
+					</h:form>
+
+				</p:layoutUnit>
+
+				<p:layoutUnit position="center">
+					<h:form>
+						<p:panel header="Ejemplo de eventos en Ajax">
+							<h:panelGrid columns="3" cellpadding="5">
+								<h:outputText value="Escribe tu Nombre: " />
+								<p:inputText id="Nombre" value="#{ajaxCoreMB.nombre}">
+									<p:ajax event="keyup" update="out1" />
+								</p:inputText>
+								<h:outputText id="out1" value="#{ajaxCoreMB.nombre}" />
+
+								<h:outputText value="Blur: " />
+								<p:inputText id="username" value="#{ajaxCoreMB.username}">
+									<p:ajax event="blur" update="out2" />
+								</p:inputText>
+								<h:outputText id="out2" value="#{ajaxCoreMB.username}" />
+							</h:panelGrid>
+						</p:panel>
+					</h:form>
+				</p:layoutUnit>
+
+				<p:layoutUnit position="west" size="200" header="Left"
+					resizable="true" closable="true" collapsible="true">
+				</p:layoutUnit>
+				<p:layoutUnit position="west" size="200" header="Izquierda"
+					resizable="true" closable="true" collapsible="true">
+				</p:layoutUnit>
+				<p:layoutUnit position="east" size="200" header="Derecha"
+					resizable="true" closable="true" collapsible="true" effect="drop">
+
+					<p:calendar value="#{calendarMB.fecha1}" mode="inline" pages="1"
+						id="inlineCal">
+					</p:calendar>
+				</p:layoutUnit>
+			</p:layout>
+		</f:view>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mx.com.oposicion.persistence.ListaDatoMapper">
+
+
+	<sql id="camposListaDato">
+                        idlista,
+                        idregistro
+        </sql>
+
+
+    <resultMap id="listaDatoMap" type="ListaDatoType" >
+        <result property="idlista" column="idlista"/>
+        <result property="idregistro" column="idregistro"/>
+    </resultMap>
+
+
+    <select id="findById" resultMap="listaDatoMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposListaDato"/>
+		FROM 
+			lista_dato
+		WHERE 
+			idlista=#{idlista}
+    </select>
+
+
+
+	<insert id="insert" parameterType="ListaDatoType">
+		INSERT INTO lista_dato( <include refid="camposListaDato"/> )
+ 		VALUES(
+ 			#{idlista},
+                        #{idregistro}
+                
+		)
+    </insert>
+
+
+
+	<update id="delete" parameterType="ListaDatoType">
+			delete from lista_dato 
+			WHERE
+                            idlista = #{idlista}
+    </update>
+
+
+</mapper>

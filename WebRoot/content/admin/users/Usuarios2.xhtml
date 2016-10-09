@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" > 
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../support/templates/ComplexTemplate.xhtml">
+
+    <ui:define name="pageName">Usuarios </ui:define>
+    <ui:define name="content">
+
+        <f:view encoding="UTF-8" contentType="text/html">
+            <h:head>
+                <title>#{translatedMessage['title.message']}</title>
+                <style>
+                    .ui-autocomplete-panel {
+                        max-width: 600px;
+                        z-index: 2012;
+                        overflow:auto;
+                     }
+                </style>
+            </h:head>
+            <h:body>
+                <h:form id="forma">
+                    <h:outputScript library="js" name="calendar_es.js" />
+                    
+  
+                    
+                            <p:outputPanel id="panelTabla" >         
+                    <p:panel style="width: 100%; background: #D9D9D9" header="Usuarios" >
+                        
+                       
+                        
+                         <p:dataTable id="usuarioTable" 
+                                     var="usuarioSelected" 
+                                     value="#{usuarioMB.usuarioDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex1"
+                                     lazy="true"
+                                     editable="false"
+                                    >
+                           <p:ajax event="rowSelect" listener="#{usuarioMB.onRowSelectUsuarioData}" update="usuarioTable " /> 
+
+                            <f:facet name="header">  
+                                <h:outputText value="" />
+                            </f:facet>
+                             <p:column headerText="N°" style="width:15px">
+                                #{rowIndex1+1}
+                            </p:column>
+                            <p:column style="width:15px" headerText="Sessión" exportable="false">  
+                                <p:commandButton id="deleteButton" update=":forma:dlgBorrar2" oncomplete="dlgBorrar2.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{usuarioSelected}" target="#{usuarioMB.usuarioSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <p:column><f:facet name="header">Id Usuario</f:facet><h:outputText value="#{usuarioSelected.idUsuario}" /></p:column>
+                            <p:column><f:facet name="header">Id Sessión</f:facet><h:outputText value="#{usuarioSelected.sessionId}" /></p:column>
+                            <p:column  ><f:facet name="header">usuario</f:facet><h:outputText value="#{usuarioSelected.usuario}" /></p:column>
+                            <p:column  ><f:facet name="header">clave</f:facet><h:outputText value="#{usuarioSelected.clave}" /></p:column>
+                            <p:column  ><f:facet name="header">correo</f:facet><h:outputText value="#{usuarioSelected.correo}" /></p:column>
+                            <p:column  filterBy="#{usuarioSelected.nombre}"><f:facet name="header">nombre</f:facet><h:outputText value="#{usuarioSelected.nombre}" /></p:column>
+                            <p:column  ><f:facet name="header">apaterno</f:facet><h:outputText value="#{usuarioSelected.apaterno}" /></p:column>
+                            <p:column  ><f:facet name="header">amaterno</f:facet><h:outputText value="#{usuarioSelected.amaterno}" /></p:column>
+                            <p:column  ><f:facet name="header">fecha_creacion</f:facet><h:outputText value="#{usuarioSelected.fechaCreacion}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+                            <p:column  ><f:facet name="header">cuenta_no_expirada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.cuentaNoExpirada}" disabled="true"/></p:column>
+                            <p:column  ><f:facet name="header">cuenta_no_bloqueada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.cuentaNoBloqueada}" disabled="true"/></p:column>
+                            <p:column  rendered="false"><f:facet name="header">credencial_no_expirada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.credencialNoExpirada}" disabled="true"/></p:column>
+                            <p:column  ><f:facet name="header">habilitado</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.habilitado}" disabled="true"/></p:column>
+                            <p:column  ><f:facet name="header">contador_intentos_fallidos</f:facet><h:outputText value="#{usuarioSelected.contadorIntentosFallidos}" /></p:column>
+                            <p:column  rendered="false"><f:facet name="header">instante_de_bloqueo</f:facet><h:outputText value="#{usuarioSelected.instanteDeBloqueo}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+                            <p:column  rendered="false"><f:facet name="header">pregunta_secreta</f:facet><h:outputText value="#{usuarioSelected.preguntaSecreta}" /></p:column>
+                            <p:column  rendered="false"><f:facet name="header">respuesta_secreta</f:facet><h:outputText value="#{usuarioSelected.respuestaSecreta}" /></p:column>
+                            <p:column  ><f:facet name="header">id_de_seguridad</f:facet><h:outputText value="#{usuarioSelected.idSeguridad}" /></p:column>
+                            <p:column  ><f:facet name="header">ventana_para_id_seguridad</f:facet><h:outputText value="#{usuarioSelected.ventanaParaIdSeguridad}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+
+                            <p:column><f:facet name="header">Activo</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.activo}" disabled="true" /></p:column>
+                            
+                          
+                           
+                            
+                             <f:facet name="footer"  >   
+                                <p:spacer height="10" width="0" />
+                        
+                            </f:facet>
+                              
+                        </p:dataTable> 
+                        
+            
+                        </p:panel>
+
+                            </p:outputPanel>
+                        
+                        <p:dialog id="dlgBorrar2" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar2"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                
+                                <h:outputText value="Denominación:" />
+                                <h:outputText value="#{usuarioMB.usuarioSelected.nombre}"/>
+                                 </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Borrar" actionListener="#{usuarioMB.borraSession(usuarioMB.usuarioSelected)}" oncomplete="dlgBorrar2.hide()" update=":forma:usuarioTable" />
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrar2.hide()" />
+
+                    </p:dialog> 
+                       
+                    
+                </h:form>
+            </h:body>
+
+        </f:view>
+    </ui:define>
+</ui:composition>

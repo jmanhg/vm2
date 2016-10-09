@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+    
+
+	<p:menubar >
+		<p:submenu label="Archivo">
+			<p:submenu label="Nuevo">
+				<p:menuitem value="Proyecto" url="#" />
+				<p:menuitem value="Otro" url="#" />
+			</p:submenu>
+			<p:menuitem value="Abrir" url="#"></p:menuitem>
+			<p:menuitem value="Salir" url="#"></p:menuitem>
+		</p:submenu>
+		<p:submenu label="Editar">
+			<p:menuitem value="Deshacer" url="#"></p:menuitem>
+			<p:menuitem value="Rehacer" url="#"></p:menuitem>
+		</p:submenu>
+		<p:submenu label="Catalogos">
+			<p:menuitem value="Cliente" url="#"></p:menuitem>
+			<p:menuitem value="Solicitante" url="#"></p:menuitem>
+		</p:submenu>
+		<p:submenu label="Ayuda">
+			<p:menuitem value="Contenido" url="#" />
+			<p:submenu label="Busqueda">
+				<p:submenu label="Texto">
+					<p:menuitem value="Workspace" url="#" />
+				</p:submenu>
+				<p:menuitem value="Archivo" url="#" />
+			</p:submenu>
+		</p:submenu>
+             
+            <p:submenu label="Salir">
+                <p:menuitem>
+                    <h:form prependId="false">
+                        <h:commandButton value="logout" action="#{loginMB.logout}" />
+                    </h:form>
+		</p:menuitem>
+            </p:submenu>
+	</p:menubar>
+
+</ui:composition>

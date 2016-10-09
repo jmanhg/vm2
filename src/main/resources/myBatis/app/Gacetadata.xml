@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mx.com.oposicion.persistence.GacetadataMapper">
+
+
+	<sql id="camposGacetadata">
+                        idRegistro,
+                        Tipo,
+                        Subtipo,
+                        Registro,
+                        Solicitud,
+                        Titulo,
+                        Titular,
+                        Gaceta,
+                        Pagina,
+                        Clase,
+                        Prioridad,
+                        ID_PUBL_PCT,
+                        ID_SOLICITUD_PCT,
+                        Pais,
+                        Presentacion,
+                        F_Registro,
+                        Vigencia,
+                        Tipo_Gaceta,
+                        Apoderado,
+                        case when imagen is not null then 1 else 0 end as Diseño,
+                        titular_dir,
+                        Presentacion2,
+                        F_Registro2
+        </sql>
+        <sql id="camposGacetadataF">
+                        g.idRegistro,
+                        g.Tipo,
+                        g.Subtipo,
+                        g.Registro,
+                        g.Solicitud,
+                        g.Titulo,
+                        g.Titular,
+                        g.Gaceta,
+                        count(*) Pagina,
+                        g.Clase,
+                        (Select count(*) from gacetadata_viena where solicitud=g.Solicitud) Prioridad,
+                        count(*)*100/(Select count(*) from gacetadata_viena where solicitud=g.Solicitud) ID_PUBL_PCT,
+                        g.ID_SOLICITUD_PCT,
+                        g.Pais,
+                        g.Presentacion,
+                        g.F_Registro,
+                        g.Vigencia,
+                        g.Tipo_Gaceta,
+                        g.Apoderado,
+                        case when g.imagen is not null then 1 else 0 end as Diseño,
+                        g.titular_dir,
+                        g.Presentacion2,
+                        g.F_Registro2
+        </sql>
+        <sql id="camposGacetadataWithBLOBs">
+                        idRegistro,
+                        Tipo,
+                        Subtipo,
+                        Registro,
+                        Solicitud,
+                        Titulo,
+                        Titular,
+                        Gaceta,
+                        Pagina,
+                        Clase,
+                        Prioridad,
+                        ID_PUBL_PCT,
+                        ID_SOLICITUD_PCT,
+                        Pais,
+                        Presentacion,
+                        F_Registro,
+                        Vigencia,
+                        Tipo_Gaceta,
+                        Apoderado,
+                        case when imagen is not null then 1 else 0 end as Diseño,
+                        titular_dir,
+                        Presentacion2,
+                        F_Registro2,
+                        imagen
+        </sql>
+
+
+    <resultMap id="gacetadataMap" type="GacetadataType" >
+        <result property="idRegistro" column="idRegistro"/>
+        <result property="tipo" column="Tipo"/>
+        <result property="subtipo" column="Subtipo"/>
+        <result property="registro" column="Registro"/>
+        <result property="solicitud" column="Solicitud"/>
+        <result property="titulo" column="Titulo"/>
+        <result property="titular" column="Titular"/>
+        <result property="gaceta" column="Gaceta"/>
+        <result property="pagina" column="Pagina"/>
+        <result property="clase" column="Clase"/>
+        <result property="prioridad" column="Prioridad"/>
+        <result property="idPublPCT" column="ID_PUBL_PCT"/>
+        <result property="idSolicitudPCT" column="ID_SOLICITUD_PCT"/>
+        <result property="pais" column="Pais"/>
+        <result property="presentacion" column="Presentacion"/>
+        <result property="fRegistro" column="F_Registro"/>
+        <result property="vigencia" column="Vigencia"/>
+        <result property="tipoGaceta" column="Tipo_Gaceta"/>
+        <result property="apoderado" column="Apoderado"/>
+        <result property="diseno" column="Diseño"/>
+        <result property="titularDir" column="titular_dir"/>
+        <result property="presentacion2" column="Presentacion2"/>
+        <result property="fRegistro2" column="F_Registro2"/>
+    </resultMap>
+    
+    <resultMap id="gacetadataMapWithBLOBs" type="GacetadataType" extends="gacetadataMap" >
+        <result property="imagen" column="imagen"/>
+    </resultMap> 
+
+    <select id="findFigurativo" resultMap="gacetadataMap" parameterType="map">
+		
+                        SELECT 
+                           <include refid="camposGacetadataF"/> 
+                        FROM 
+                            gacetadata g, gacetadatav_viena vv, gacetadata_viena gv 
+                        WHERE
+                            vv.solicitud=#{solicitud} and 
+                            gv.solicitud=g.solicitud and
+                            vv.categoria=gv.categoria and
+                            vv.division=gv.division and
+                            vv.seccion=gv.seccion
+                           <if test="fechaPub1 != null and fechaPub2 == null  ">
+                            and g.F_Registro = DATE_FORMAT(#{fechaPub1},'%Y/%m/%d') 
+                           </if>
+                           <if test="fechaPub1 != null and fechaPub2 != null  ">
+                            and g.F_Registro between DATE_FORMAT(#{fechaPub1},'%Y/%m/%d') 
+                            and DATE_FORMAT(#{fechaPub2},'%Y/%m/%d')
+                           </if>
+                            group by gv.solicitud,vv.solicitud
+                            order by vv.secuencia ,ID_PUBL_PCT desc,count(*) desc 
+                            limit #{limit}
+    </select>
+    
+     <select id="findFigurativoClase" resultMap="gacetadataMap" parameterType="map">
+		
+                        SELECT 
+                           <include refid="camposGacetadataF"/> 
+                        FROM 
+                            gacetadata g, gacetadatav_viena vv, gacetadata_viena gv, gacetadata_clase c
+                        where 
+                            gv.solicitud=g.solicitud and
+                            gv.solicitud=c.solicitud and
+                            vv.categoria=gv.categoria and
+                            vv.division=gv.division and
+                            vv.seccion=gv.seccion and
+                            vv.solicitud=#{solicitud} and
+                            c.clase=#{clase} 
+                           <if test="fechaPub1 != null and fechaPub2 == null ">
+                            and g.F_Registro = DATE_FORMAT(#{fechaPub1},'%Y/%m/%d') 
+                           </if>
+                           <if test="fechaPub1 != null and fechaPub2 != null  ">
+                            and g.F_Registro between DATE_FORMAT(#{fechaPub1},'%Y/%m/%d') 
+                            and DATE_FORMAT(#{fechaPub2},'%Y/%m/%d')
+                           </if>
+                            group by gv.solicitud,vv.solicitud
+                            order by vv.secuencia ,ID_PUBL_PCT desc,count(*) desc  
+                            limit #{limit}
+    </select>
+    
+    <select id="findById" resultMap="gacetadataMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadata
+		WHERE 
+			idRegistro=#{idRegistro}
+    </select>
+    
+    <select id="findByIdV" resultMap="gacetadataMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadatav
+		WHERE 
+			idRegistro=#{idRegistro}
+    </select>
+    
+    <select id="findByIdBlob" resultMap="gacetadataMapWithBLOBs" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposGacetadataWithBLOBs"/>
+		FROM 
+			gacetadata
+		WHERE 
+			idRegistro=#{idRegistro}
+    </select>
+    
+    <select id="findByIdBlobV" resultMap="gacetadataMapWithBLOBs" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposGacetadataWithBLOBs"/>
+		FROM 
+			gacetadatav
+		WHERE 
+			idRegistro=#{idRegistro}
+    </select>
+
+<select id="findBy" resultMap="gacetadataMap" parameterType="GacetadataType">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadata
+		 <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                   
+                    <if test="idRegistro > 0 ">
+                        idRegistro=#{idRegistro}
+                    </if>
+                    <if test="tipo != null and tipo != '' ">
+                      AND  Tipo=#{tipo}
+                    </if>
+                    <if test="subtipo != null and subtipo != '' ">
+                      AND  Subtipo=#{subtipo}
+                    </if>
+                     <if test="registro != null and registro != '' ">
+                      AND  Registro =#{registro}
+                    </if>
+                     <if test="solicitud != null and solicitud != '' ">
+                      AND  Solicitud=#{solicitud}
+                    </if>
+                    <if test="gaceta != null and gaceta != '' ">
+                         AND  upper(gaceta) LIKE upper(concat('%',#{gaceta},'%'))
+                    </if>
+                    <if test="fRegistro != null and fRegistro != ''">
+                        and f_registro = DATE_FORMAT(#{fRegistro},'%Y/%m/%d') 
+                    </if>
+                    <if test="presentacion != null and presentacion != ''">
+                        and presentacion = DATE_FORMAT(#{presentacion},'%Y/%m/%d') 
+                    </if>
+                    <if test="titulo != null and titulo != '' ">
+                        AND upper(titulo) LIKE upper(concat('%',#{titulo},'%'))
+                    </if>
+                     <if test="titular != null and titular != '' ">
+                       AND  upper(Titular) LIKE upper(concat('%',#{titular},'%'))
+                    </if>
+                     <if test="apoderado != null and apoderado != '' ">
+                      AND  Apoderado LIKE concat('%',#{apoderado},'%')
+                    </if>
+                </trim>
+
+    </select>
+    
+    <select id="findByV" resultMap="gacetadataMap" parameterType="GacetadataType">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadatav
+		 <trim prefix="WHERE" prefixOverrides="AND |OR ">
+                   
+                    <if test="idRegistro > 0 ">
+                        idRegistro=#{idRegistro}
+                    </if>
+                    <if test="tipo != null and tipo != '' ">
+                      AND  Tipo=#{tipo}
+                    </if>
+                    <if test="subtipo != null and subtipo != '' ">
+                      AND  Subtipo=#{subtipo}
+                    </if>
+                     <if test="registro != null and registro != '' ">
+                      AND  Registro=#{registro}
+                    </if>
+                     <if test="solicitud != null and solicitud != '' ">
+                      AND  Solicitud=#{solicitud}
+                    </if>
+                     <if test="titulo != null and titulo != '' ">
+                       AND upper(titulo) LIKE upper(concat('%',#{titulo},'%'))
+                    </if>
+                     <if test="titular != null and titular != '' ">
+                      AND  upper(Titular) LIKE upper(concat('%',#{titular},'%'))
+                    </if>
+                     <if test="apoderado != null and apoderado != '' ">
+                      AND  upper(Apoderado) LIKE upper(concat('%',#{apoderado},'%'))
+                    </if>
+                    <if test="pagina >0 ">
+                      AND  idregistro in (select idregistro from gacetadatav_usuario where id_usuario=#{pagina} ) 
+                    </if>
+                </trim>
+
+    </select>
+
+    <select id="getAll" resultMap="gacetadataMap">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadata 
+    </select>
+    
+     <select id="getAllV" resultMap="gacetadataMap">
+		SELECT 
+			<include refid="camposGacetadata"/>
+		FROM 
+			gacetadatav
+    </select>
+
+
+	<insert id="insert" parameterType="GacetadataType">
+		INSERT INTO gacetadata( <include refid="camposGacetadata"/> )
+ 		VALUES(
+ 			null,
+			#{tipo},
+                        #{subtipo},
+                        #{registro},
+                        #{solicitud},
+                        #{titulo},
+                        #{titular},
+                        #{gaceta},
+                        #{pagina},
+                        #{clase},
+                        #{prioridad},
+                        #{idPublPCT},
+                        #{idSolicitudPCT},
+                        #{pais},
+                        #{presentacion},
+                        #{fRegistro},
+                        #{vigencia},
+                        #{tipoGaceta},
+                        #{apoderado},
+                        #{diseno},
+                        #{titularDir},
+                        #{presentacion2},
+                        #{fRegistro2}
+                
+		)	
+		<selectKey keyProperty="idRegistro" resultType="int">
+			SELECT last_insert_id() AS idRegistro
+		</selectKey>
+    </insert>
+
+<insert id="insertV" parameterType="GacetadataType">
+		INSERT INTO gacetadatav( <include refid="camposGacetadata"/> )
+ 		VALUES(
+ 			null,
+			#{tipo},
+                        #{subtipo},
+                        #{registro},
+                        #{solicitud},
+                        #{titulo},
+                        #{titular},
+                        #{gaceta},
+                        #{pagina},
+                        #{clase},
+                        #{prioridad},
+                        #{idPublPCT},
+                        #{idSolicitudPCT},
+                        #{pais},
+                        #{presentacion},
+                        #{fRegistro},
+                        #{vigencia},
+                        #{tipoGaceta},
+                        #{apoderado},
+                        #{diseno},
+                        #{titularDir},
+                        #{presentacion2},
+                        #{fRegistro2}
+                
+		)	
+		<selectKey keyProperty="idRegistro" resultType="int">
+			SELECT last_insert_id() AS idRegistro
+		</selectKey>
+    </insert>
+
+
+	<update id="update" parameterType="GacetadataType">
+			UPDATE gacetadata SET
+				Tipo=#{tipo},
+                                Subtipo=#{subtipo},
+                                Registro=#{registro},
+                                Solicitud=#{solicitud},
+                                Titulo=#{titulo},
+                                Titular=#{titular},
+                                Gaceta=#{gaceta},
+                                Pagina=#{pagina},
+                                Clase=#{clase},
+                                Prioridad=#{prioridad},
+                                ID_PUBL_PCT=#{idPublPCT},
+                                ID_SOLICITUD_PCT=#{idSolicitudPCT},
+                                Pais=#{pais},
+                                Presentacion=#{presentacion},
+                                F_Registro=#{fRegistro},
+                                Vigencia=#{vigencia},
+                                Tipo_Gaceta=#{tipoGaceta},
+                                Apoderado=#{apoderado},
+                                Diseño=#{diseno},
+                                titular_dir=#{titularDir},
+                                Presentacion2=#{presentacion2},
+                                F_Registro2=#{fRegistro2}
+			WHERE
+                                idRegistro = #{idRegistro}
+    </update>
+
+
+
+	<update id="updateV" parameterType="GacetadataType">
+			UPDATE gacetadatav SET
+				Tipo=#{tipo},
+                                Subtipo=#{subtipo},
+                                Registro=#{registro},
+                                Solicitud=#{solicitud},
+                                Titulo=#{titulo},
+                                Titular=#{titular},
+                                Gaceta=#{gaceta},
+                                Pagina=#{pagina},
+                                Clase=#{clase},
+                                Prioridad=#{prioridad},
+                                ID_PUBL_PCT=#{idPublPCT},
+                                ID_SOLICITUD_PCT=#{idSolicitudPCT},
+                                Pais=#{pais},
+                                Presentacion=#{presentacion},
+                                F_Registro=#{fRegistro},
+                                Vigencia=#{vigencia},
+                                Tipo_Gaceta=#{tipoGaceta},
+                                Apoderado=#{apoderado},
+                                Diseño=#{diseno},
+                                titular_dir=#{titularDir},
+                                Presentacion2=#{presentacion2},
+                                F_Registro2=#{fRegistro2}
+			WHERE
+                                idRegistro = #{idRegistro}
+    </update>
+
+
+	<update id="delete" parameterType="GacetadataType">
+			delete from gacetadata 
+			WHERE
+                            idRegistro = #{idRegistro}
+    </update>
+    
+    <update id="deleteV" parameterType="GacetadataType">
+			delete from gacetadatav
+			WHERE
+                            idRegistro = #{idRegistro}
+    </update>
+
+
+</mapper>

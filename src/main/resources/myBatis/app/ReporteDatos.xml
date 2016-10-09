@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mx.com.oposicion.persistence.ReporteDatosMapper">
+
+
+	<sql id="camposReporteDatos">
+                       idReg,
+                        idRep,
+                        idRegistro, 
+                        tipo, 
+                        subtipo, 
+                        registro, 
+                        solicitud, 
+                        denominacion, 
+                        clase,
+                        titular, 
+                        apoderado,
+                        resultados,
+                        imagen,
+                        fonetico,
+                        ejecutivo,
+                        figurativo,
+                        figurativo2
+
+    
+        </sql>
+
+
+    <resultMap id="reporteDatosMap" type="ReporteDatosType" >
+        <result property="idReg" column="idReg"/>
+        <result property="idRep" column="idRep"/>
+        <result property="idRegistro" column="idRegistro"/>
+        <result property="tipo" column="tipo"/>
+        <result property="subtipo" column="subtipo"/>
+        <result property="registro" column="registro"/>
+        <result property="solicitud" column="solicitud"/>
+        <result property="denominacion" column="denominacion"/>
+        <result property="clase" column="clase"/>
+        <result property="titular" column="titular"/>
+        <result property="apoderado" column="apoderado"/>
+        <result property="resultados" column="resultados"/>
+        <result property="imagen" column="imagen"/>
+        <result property="fonetico" column="fonetico"/>
+        <result property="ejecutivo" column="ejecutivo"/>
+        <result property="figurativo" column="figurativo"/>
+        <result property="figurativo2" column="figurativo2"/>
+    </resultMap>
+
+
+    <select id="findById" resultMap="reporteDatosMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposReporteDatos"/>
+		FROM 
+			reporte_datos
+		WHERE 
+			idRep=#{idRep}
+    </select>
+
+
+    <select id="getAll" resultMap="reporteDatosMap">
+		SELECT 
+			<include refid="camposReporteDatos"/>
+		FROM 
+			reporte_datos 
+    </select>
+
+
+	<insert id="insert" parameterType="ReporteDatosType">
+		INSERT INTO reporte_datos( <include refid="camposReporteDatos"/> )
+ 		VALUES(
+ 			null,
+			#{idRep},
+			#{idRegistro}, 
+                        #{tipo}, 
+                        #{subtipo}, 
+                        #{registro}, 
+                        #{solicitud}, 
+                        #{denominacion}, 
+                        #{clase},
+                        #{titular}, 
+                        #{apoderado}, 
+                        #{resultados}, 
+                        #{imagen},
+                        #{fonetico},
+                        #{ejecutivo}, 
+                        #{figurativo},
+                        #{figurativo2}
+                
+		)	
+		<selectKey keyProperty="idReg" resultType="int">
+			SELECT last_insert_id() AS idReg
+		</selectKey>
+    </insert>
+
+
+	<update id="update" parameterType="ReporteDatosType">
+			UPDATE reporte_datos SET
+				idRep=#{idRep},
+                                idRegistro=#{idRegistro},
+                                tipo=#{tipo},
+                                subtipo=#{subtipo},
+                                registro=#{registro},
+                                solicitud=#{solicitud},
+                                denominacion=#{denominacion},
+                                clase=#{clase},
+                                titular=#{titular},
+                                apoderado=#{apoderado},
+                                resultados=#{resultados},
+                                imagen=#{imagen},
+                                fonetico=#{fonetico},
+                                ejecutivo=#{ejecutivo},
+                                figurativo=#{figurativo},
+                                figurativo2=#{figurativo2}
+			WHERE
+                                idReg = #{idReg}
+    </update>
+
+
+	<update id="delete" parameterType="ReporteDatosType">
+			delete from reporte_datos 
+			WHERE
+                            idReg = #{idReg}
+    </update>
+
+
+</mapper>

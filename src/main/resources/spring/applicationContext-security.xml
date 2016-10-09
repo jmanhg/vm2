@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans:beans
+    xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                        http://www.springframework.org/schema/security
+                        http://www.springframework.org/schema/security/spring-security-3.0.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <global-method-security secured-annotations="enabled" />
+
+    <http
+        auto-config="false" 
+        entry-point-ref="authenticationEntryPoint"
+        access-decision-manager-ref="accessDecisionManager"
+        access-denied-page="/content/support/err/PageNotFound.jsf">
+
+        
+        <intercept-url pattern="/content/restricted/**" access="PERFIL_USER" />
+        <intercept-url pattern="/content/fonetico/**" access="PERFIL_FONETICO, PERFIL_FIGURATIVO" />
+        <intercept-url pattern="/content/figurativo/**" access="PERFIL_FONETICO, PERFIL_FIGURATIVO" />
+        <intercept-url pattern="/content/captura/**" access="PERFIL_CAP_VIENA" />
+        <intercept-url pattern="/content/gaceta/**" access="PERFIL_GACETA" />
+        <intercept-url pattern="/content/supervisor/**" access="PERFIL_SUPERVISOR" />
+        <intercept-url pattern="/content/admin/users/**" access="PERFIL_ADMIN" />
+        
+        <custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER" />
+        <custom-filter ref="concurrencyFilter" position="CONCURRENT_SESSION_FILTER" />
+	<session-management session-authentication-strategy-ref="sas" 
+            invalid-session-url="/content/common/login.jsf"
+            session-authentication-error-url="/content/common/session-concurrent.jsf"
+        />
+        
+        <logout invalidate-session="true"
+                logout-success-url="/content/common/login.jsf"
+                logout-url="/j_spring_security_logout"
+                />
+        
+        <!--<session-management 
+            invalid-session-url="/content/common/login.jsf"
+            session-authentication-error-url="/content/common/session-concurrent.jsf"
+        >
+            <concurrency-control 
+                
+                error-if-maximum-exceeded="true" 
+                max-sessions="1" 
+                expired-url="/content/common/session-expired.jsf"
+                session-registry-ref="sessionRegistry" />
+        </session-management>-->
+       
+       
+        <remember-me key="myKey"/>
+    <!-- <form-login
+            login-processing-url="/j_spring_security_check"
+            login-page="/content/common/login.jsf"
+            authentication-success-handler-ref="loginSuccessHandler"
+            authentication-failure-handler-ref="loginFailureHandler"
+            authentication-failure-url="/content/common/login.jsf?status=logout"   
+            
+        />-->
+    </http>
+    <beans:bean id="authenticationFilter"
+		class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		<beans:property name="sessionAuthenticationStrategy" ref="sas" />
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+		<beans:property name="authenticationFailureHandler" ref="loginFailureHandler" />
+		<beans:property name="authenticationSuccessHandler" ref="loginSuccessHandler" />
+	</beans:bean>
+    
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="usuarioService" >
+            <password-encoder ref="passwordEncoder" >
+            </password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+    
+    <!--<authentication-manager >
+        <authentication-provider user-service-ref="usuarioService" >
+            <password-encoder ref="customPasswordEncoder" >
+            	<salt-source user-property="username" />
+            </password-encoder>
+        </authentication-provider>
+    </authentication-manager>
+-->
+    
+    <beans:bean id="accessDecisionManager" 
+                class="org.springframework.security.access.vote.AffirmativeBased">
+        <!-- Define los participantes en el proceso de autenticación: -->
+        <beans:property name="decisionVoters">
+            <beans:list>
+                <beans:ref bean="decisorDeRoles" />
+                <beans:ref bean="decisorDeAutenticacion" />
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+
+    
+    <beans:bean id="decisorDeRoles" class="org.springframework.security.access.vote.RoleVoter">
+        <beans:property name="rolePrefix" value="PERFIL_" />
+    </beans:bean>
+
+
+    <beans:bean id="decisorDeAutenticacion" class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+
+    <beans:bean id="authenticationEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:property name="loginFormUrl" value="/content/common/login.jsf" />
+    </beans:bean>
+        
+   <beans:bean id="concurrencyFilter"
+		class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<beans:property name="sessionRegistry" ref="sessionRegistry" />
+		<beans:property name="expiredUrl" value="/content/common/session-expired.jsf" />
+                
+    </beans:bean>
+    
+    <beans:bean id="sas" 
+        class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+        <beans:property name="maximumSessions" value="1" />  
+        <beans:property name="exceptionIfMaximumExceeded" value="true" />  
+        <!--<beans:property name="forceEagerSessionCreation" value="true"/>-->
+        <beans:constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+    </beans:bean>
+
+	<beans:bean id="sessionRegistry"
+		class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	
+	
+<!--     <beans:bean id="loginSuccessHandler" class="mx.com.oposicion.ej012.security.LoginSuccessHandler" > -->
+<!--         <beans:property name="defaultTargetUrl" value="/content/restricted/Bienvenido.jsf" /> -->
+<!--     </beans:bean> -->
+    
+<!--     <beans:bean id="loginFailureHandler" class="mx.com.oposicion.ej012.security.LoginFailureHandler" > -->
+<!--         <beans:property name="defaultFailureUrl" value="/content/common/denegado.jsf" /> -->
+<!--     </beans:bean> -->
+
+</beans:beans>

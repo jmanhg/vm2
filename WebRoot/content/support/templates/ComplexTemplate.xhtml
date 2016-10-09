@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:sec="http://www.springframework.org/schema/security">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>#{translatedMessage['title.message']}</title>
+            </f:facet>
+     
+	
+
+            <link type="text/css" rel="stylesheet" href="#{request.contextPath}/css/default.css" />
+
+            <style type="text/css">
+                
+                #divStatusCopy, #divStatus{
+                    background-color: transparent;
+                    background-image: url("/vm2/images/loader_blue.gif");
+                    background-position: center center;
+                    background-repeat: no-repeat;
+                    background-size: 100px 100px;
+                    height: 100% !important;
+                    opacity: 1;
+                    position: fixed !important;
+                    right: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    z-index: 1000 !important;
+                    display: none;
+                }
+                #divLockWindow{
+                    z-index: 1000 !important;
+                    position: fixed !important;
+                    top:0 !important;
+                    left:0 !important;
+                    height: 100% !important;
+                    width: 100% !important;
+                    display: none;
+                    opacity: 0.6;
+                }
+                 #loadImg{
+                position:absolute;
+                z-index:1001;
+                }
+                #loadImg div{
+                    display:table-cell;
+                    top: 5px;
+                    width:853px;
+                    height:550px;
+                    text-align:center;
+                    vertical-align:middle;
+                    background-image: url("/vm2/images/loader_blue.gif");
+                    background-position: center center;
+                    background-repeat: no-repeat;
+                    background-size: 100px 100px;
+                    background-color: transparent;
+                    opacity: 1.0 !important;
+                }
+                
+                .ui-widget {
+                    font-size: 96% !important; 
+                }
+                .ui-widget-overlay {
+                   top: 0px !important;
+                     opacity: 1.0 !important; /* Make sure to change both of these, as IE only sees the second one */
+                    filter: Alpha(Opacity=100) !important;
+                    background-color: rgb(250, 250, 250) !important; /* This will make it darker */
+                    
+                }
+                .ui-datagrid-no-border {
+                   border: none;
+                } 
+                .ui-layout-dlg {
+                    z-index:22 !important;
+                    overflow:visible !important;;
+                }
+                .ui-layout-north {
+                    z-index:18 !important;
+                    overflow:visible !important;;
+                }
+                .ui-layout-center {
+                    z-index:18 !important;
+                    overflow:visible !important;;
+                }
+
+                .ui-layout-north .ui-layout-unit-content {
+                    overflow:visible !important;
+                }
+                .vencido {
+                background-color: red !important;
+                background-image: none !important;
+                color: #000000 !important;
+                }
+                .stretch div  {
+                    width: 100px !important;
+                    overflow: hidden !important;
+                    word-wrap: break-word !important;
+                }
+                
+               
+            </style>
+        </h:head>
+
+
+        <h:body>
+
+<ui:insert name="header"  id="header" >
+<h:form>
+    <div id="loadImg" style="visibility: hidden" ><div></div></div>
+    <h:outputScript library="js" name="calendar_es.js" />
+    
+    <p:growl id="messages" showDetail="true" autoUpdate="true" sticky="false" life="50000" /> 
+    <p:panelGrid columns="4" style="width: 100%;border: 0" styleClass="ui-datagrid-no-border"   >
+        <f:facet name="header">  #{translatedMessage['title.message']}</f:facet>
+
+        
+        <p:menubar model="#{menuMB.menu}"/>
+       
+        <p:menubar>  
+        <p:submenu label="#{loginMB.usuarioActual}" icon="ui-icon-person"> 
+            <p:menuitem value="Cambiar Password" url="/content/common/Password.jsf" icon="ui-icon-person"/>  
+            <p:separator /> 
+            <p:menuitem value="Salir" actionListener="#{loginMB.logout}" icon="ui-icon-power" update="messages" ajax="false"/> 
+             
+            
+        </p:submenu>
+        </p:menubar>
+        <p:graphicImage value="/images/op.png" style="height: 45px;text-align: right" alt="#{translatedMessage['title.message']}" />
+        </p:panelGrid>
+    <p:dialog id="dlgAbout" header="Acerca de..." width="360" height="150" widgetVar="dlgAbout"  >
+                        <p:panel  style="width:  350px">
+                            <h:panelGrid columns="2" style="width: 350px" >
+                                <h:outputText />
+                                <h:outputText  />
+                                <h:outputText value="#{translatedMessage['title.message']}" />
+                                <h:outputText  />
+                                <h:outputText value="Versión:1.1.001" />
+                                <h:outputText  />
+                                
+                           </h:panelGrid> 
+                    </p:panel>
+                    </p:dialog>
+</h:form>  
+                   
+</ui:insert>
+
+             
+                    <ui:insert name="content"></ui:insert>
+
+                    
+               
+
+            
+       <script>
+                
+                
+(function() {
+    'use strict';
+
+    console.log('La session de este sitio se extendera automaticamente.');
+
+    var minute = 60*1000;
+    var refreshTime = 10 * minute;
+    var lastRefresh=0;
+
+    var iframe = document.createElement("iframe");
+    iframe.style.width = 0;
+    iframe.style.height=0;
+
+    var src='../../content/common/blank.html?sessionextendercachebuster=';
+
+    var reloadIframe = function(){
+        var time = new Date().getTime();
+        //var lastRefresh = GM_getValue('lastRefresh');
+        var timeSinceLastRefresh = time - lastRefresh;
+        if (!lastRefresh || timeSinceLastRefresh > refreshTime - minute) {
+            console.log('Auto-extendiendo session');
+            iframe.src = src + time;
+            //GM_setValue('lastRefresh',time);
+            lastRefresh=time;
+            setTimeout(reloadIframe, refreshTime);
+
+            setTimeout(function(){
+                // Unload the iframe contents since it might be taking a lot of memory
+                iframe.src='about:blank';
+            },10000);
+        }else{
+            console.log('Otro tab/window probablemente refresco la session, espere un poco mas');
+            setTimeout(reloadIframe, refreshTime - timeSinceLastRefresh - minute);
+        }
+    };
+    setTimeout(reloadIframe, refreshTime);
+    document.body.appendChild(iframe);
+})();
+            </script>
+        </h:body>
+
+    </f:view>
+</html>
+

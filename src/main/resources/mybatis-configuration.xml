@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Configuration 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+
+<configuration>
+    <typeAliases>
+        <typeAlias
+            type="mx.com.oposicion.model.Usuario"
+            alias="UsuarioType" />
+        <typeAlias
+            type="mx.com.oposicion.model.Perfil"
+            alias="PerfilType" />
+       
+      
+            <typeAlias
+            type="mx.com.oposicion.model.Bitacora"
+            alias="BitacoraType" />
+            
+             
+             
+             <typeAlias
+            type="mx.com.oposicion.model.Reporte"
+            alias="ReporteType" />
+             
+             <typeAlias
+            type="mx.com.oposicion.model.ReporteDatos"
+            alias="ReporteDatosType" />
+             
+             <typeAlias
+            type="mx.com.oposicion.model.ReporteFonetico"
+            alias="ReporteFoneticoType" />
+             
+                   <typeAlias
+            type="mx.com.oposicion.model.Gacetadata"
+            alias="GacetadataType" />
+                   
+                   <typeAlias
+            type="mx.com.oposicion.model.CatViena"
+            alias="CatVienaType" />
+                   <typeAlias
+            type="mx.com.oposicion.model.GacetadataViena"
+            alias="GacetadataVienaType" />
+                   
+                   <typeAlias
+            type="mx.com.oposicion.model.Lista"
+            alias="ListaType" />
+                   
+                   <typeAlias
+            type="mx.com.oposicion.model.ListaDato"
+            alias="ListaDatoType" />
+    </typeAliases>
+</configuration>

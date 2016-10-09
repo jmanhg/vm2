@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<f:view contentType="text/html" >
+
+    <h:head>
+        <title>#{translatedMessage['title.message']}<ui:insert name="pageName"></ui:insert></title>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+        <style type="text/css">
+                .ui-widget, .ui-widget .ui-widget {
+                    font-size: 90% !important; 
+                }
+        </style>
+    </h:head>
+
+    <h:body>
+        
+	    <center>
+            <div style="width: 985px;">
+                <div class="post">
+                    <ui:insert name="content"></ui:insert>
+                </div>
+            </div>
+		</center>           
+    </h:body>
+
+</f:view>
+</html>

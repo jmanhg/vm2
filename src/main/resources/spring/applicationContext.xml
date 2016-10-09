@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    
+ 
+    <context:component-scan base-package="mx.com.oposicion"/>
+    
+    <context:annotation-config/>        
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
+    <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
+    
+    <!-- Configuracion de los archivos de propiedades -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:application.properties</value>
+            </list>
+        </property>
+    </bean>    
+    
+    <!-- Configuracion de log4j -->
+    <bean id="log4jInitializer"
+          class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod"
+                  value="org.springframework.util.Log4jConfigurer.initLogging" />
+        <property name="arguments">
+            <list>
+                <value>classpath:log4j.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+    <bean id="c2kEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+    <bean id="simplePasswordEncoder" class="org.springframework.security.authentication.encoding.PlaintextPasswordEncoder"/>
+<!-- Register View Scope -->
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="view">
+					<bean class="mx.com.oposicion.support.ViewScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+        
+        <bean id="bitacoraService" class="mx.com.oposicion.service.BitacoraServiceImpl" />
+    
+</beans>

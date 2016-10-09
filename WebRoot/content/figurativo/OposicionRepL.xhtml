@@ -1,0 +1,919 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" > 
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../support/templates/ComplexTemplate.xhtml">
+
+    <ui:define name="pageName">Reporte de vigilancia </ui:define>
+    <ui:define name="content">
+
+        <f:view encoding="UTF-8" contentType="text/html">
+            <h:head>
+                <title>#{translatedMessage['title.message']}</title>
+                <style>
+                    .ui-autocomplete-panel {
+                        max-width: 600px;
+                        z-index: 2012;
+                        overflow:auto;
+                     }
+                </style>
+            </h:head>
+            <h:body>
+                <h:form id="forma">
+                    <h:outputScript library="js" name="calendar_es.js" />
+                    <p:focus context="panelSearch"/> 
+              <!--      
+<p:ajaxStatus onstart="statusDialog.show()" onsuccess="statusDialog.hide()" />
+ 
+
+<p:dialog modal="true" widgetVar="statusDialog" header="Status" draggable="false" closable="false" resizable="false">  
+    <p:graphicImage value="/images/ajax-loader_2.gif" />  
+</p:dialog>  -->
+
+                    <p:panel  style="width: 100%" id="panelSearch" >  
+                       
+                        
+                        <p:fieldset legend="Búsqueda Marcas">
+                                  <p:panelGrid  columns="6"  style="border-width: 0px"> 
+                                            
+                                            <h:outputText value="Tipo:" />
+                                            <h:outputText value="Subtipo:" />
+                                            <h:outputText value="Registro:" />
+                                            <h:outputText value="Solicitud:" />
+                                            <h:outputText value="" />
+                                            <h:outputText value="" />
+                                            
+                                            
+                                            <p:selectOneMenu id="tipo" value="#{oposicionRepLMB.tipo}" style="width:125px">
+                                            <f:selectItem itemLabel="Seleccionar..." itemValue="" />
+                                            <f:selectItem itemLabel="Solicitud de Marcas" itemValue="SM" />
+                                            <f:selectItem itemLabel="Marcas" itemValue="M" />
+                                            <f:selectItem itemLabel="Marcas Renovadas" itemValue="MR" />
+                                            <f:selectItem itemLabel="Marcas Canceladas" itemValue="MC" />
+                                            <f:selectItem itemLabel="Aviso Comercial" itemValue="AC" />
+                                            <f:selectItem itemLabel="Nombre Comercial" itemValue="NC" />
+                                            <f:selectItem itemLabel="Aviso Nombre Renovadas" itemValue="AVNC" />
+                                            <f:selectItem itemLabel="Solicitud de Marca Abandonada" itemValue="SMA" />
+                                            <f:selectItem itemLabel="Marcas Caducas" itemValue="MCAD" />
+                                            </p:selectOneMenu>
+                                            
+                                            <p:selectOneMenu id="subtipo" value="#{oposicionRepLMB.subtipo}" style="width:125px">
+                                            <f:selectItem itemLabel="Seleccionar..." itemValue="" />
+                                            <f:selectItem itemLabel="NOMINATIVA" itemValue="1" />
+                                            <f:selectItem itemLabel="DISEÑO" itemValue="2" />
+                                            <f:selectItem itemLabel="MIXTA" itemValue="3" />
+                                            <f:selectItem itemLabel="TRIDIMENSIONAL" itemValue="4" />
+                                            <f:selectItem itemLabel="MIXTA (Den. y Dis. T.)" itemValue="5" />
+                                            <f:selectItem itemLabel="MIXTA (Dis. y Forma T.)" itemValue="6" />
+                                            <f:selectItem itemLabel="MIXTA (Den., Dis. y Forma T.)" itemValue="7" />
+                                            </p:selectOneMenu>
+                                            <p:inputText value="#{oposicionRepLMB.registro}" />
+                                            <p:inputText value="#{oposicionRepLMB.solicitud}" />
+                                            <h:outputText value="" />
+                                            <p:commandButton actionListener="#{oposicionRepLMB.searchRegistroF(1)}" 
+                                                             update="gacetaTable" value="Buscar todos..."  style="margin:0"
+                                                             onstart="statusDialog.show();" 
+                                                             oncomplete="statusDialog.hide();"
+                                                            />  
+                                            
+                                            
+                                            <h:outputText value="Denominación:" />
+                                            <h:outputText value="Clase:" />
+                                            <h:outputText value="Titular:" />
+                                            <h:outputText value="Apoderado:" />
+                                            <h:outputText value="#{loginMB.getAccessRol('PERFIL_ALL_SEARCH')?'* Usuarios:':''}" style="color: blue" />
+                                            <h:outputText value="" />
+                                            <p:inputText value="#{oposicionRepLMB.denominacion}" />
+                                            <p:inputText value="#{oposicionRepLMB.clase}" />
+                                            <p:inputText value="#{oposicionRepLMB.titular}" />
+                                            <p:inputText value="#{oposicionRepLMB.apoderado}" />
+                                            <p:selectOneMenu id="idUsuario" value="#{oposicionRepLMB.idUserSearch}" style="width:125px" rendered="#{loginMB.getAccessRol('PERFIL_ALL_SEARCH')?'true':'false'}">
+                                            <f:selectItem itemLabel="Seleccionar..." itemValue="0" />
+                                            <f:selectItem itemLabel="admin" itemValue="2" />
+                                            <f:selectItem itemLabel="anciano" itemValue="102" />
+                                            </p:selectOneMenu>
+                                            <h:outputText value="" rendered="#{loginMB.getAccessRol('PERFIL_ALL_SEARCH')?'false':'true'}" />
+                                            <p:commandButton actionListener="#{oposicionRepLMB.searchRegistroF(0)}" 
+                                                             update="gacetaTable" value="Buscar..."  style="margin:0"
+                                                             onstart="statusDialog.show();" 
+                                                             oncomplete="statusDialog.hide();"
+                                                            />  
+                                            <h:outputText value="El '%' se puede usar como comodín" />
+                                            </p:panelGrid>
+                            <br/>
+                            <p:dialog id="dlgLista" header="Lista de búsquedas" width="1000px" height="500px" widgetVar="dlgLista"  >
+
+                                   
+                             <p:panelGrid  columns="1"  style="border-width: 0px;width: 90%"> 
+                                <p:dataTable id="listaTable" 
+                                     var="listaSelected" 
+                                     value="#{oposicionRepLMB.listaDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex1"
+                                    >
+                           <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectListaData}" update="listaTable :forma:gacetaTable" onstart="statusDialog.show();" oncomplete="dlgLista.hide();statusDialog.hide();" /> 
+
+                            <f:facet name="header">  
+                                <h:outputText value=""/>
+                            </f:facet>
+                             
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Lista</f:facet>
+                                <h:outputText value="#{listaSelected.idlista}"  />
+                            </p:column>
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Nombre de Lista</f:facet>
+                                <h:outputText value="#{listaSelected.nombre}"  />
+                            </p:column>
+                             
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Fecha</f:facet>
+                                <h:outputText value="#{listaSelected.fecha}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText>
+                            </p:column>
+                                               
+                            <p:column style="width:15px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButtonl" update=":forma:dlgBorrar2l" oncomplete="dlgBorrar2l.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{listaSelected}" target="#{oposicionRepLMB.listaSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                             <f:facet name="footer"  >   
+                                <p:spacer height="10" width="0" />
+                       
+                                            
+                            </f:facet>
+                              
+                        </p:dataTable>
+                                 <p:dialog id="dlgBorrar2l" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar2l"  >
+
+                                    <p:panel style="width: 90%">
+                                        <h:panelGrid columns="2">
+
+                                            <h:outputText value="Nombre:" />
+                                            <h:outputText value="#{oposicionRepLMB.listaSelected.nombre}"/>
+                                             </h:panelGrid>                    
+                                    </p:panel>
+                                    <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraRepl(oposicionRepLMB.listaSelected)}" oncomplete="dlgBorrar2l.hide()" update=":forma:listaTable :forma:dlgLista" />
+                                    <p:commandButton value="Cancelar"  oncomplete="dlgBorrar2l.hide()" />
+
+                                </p:dialog>
+                             </p:panelGrid>
+                            </p:dialog>
+                                  <p:panelGrid  columns="1"  style="border-width: 0px"> 
+                                           <p:dataTable id="gacetaTable" 
+                                     var="gacetadataSelected" 
+                                     value="#{oposicionRepLMB.gacetadataDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex1"
+                                    >
+                           <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectGacetadataData}" update="gacetaTable " /> 
+
+                            <f:facet name="header">  
+                                <h:outputText value="Número de registros encontrados: #{oposicionRepLMB.numRegsBusqueda}" rendered="#{oposicionRepLMB.numRegsBusqueda>0?true:false}"/>
+                          <br/>  <p:commandButton actionListener="#{oposicionRepLMB.searchLimpia}" update="gacetaTable :forma:oposicionTable" value="Limpiar..."  style="margin:0"/>  
+                      <p:commandButton value="Guardar" update=":forma:dlgGuardaL" oncomplete="dlgGuardaL.show()"/>
+                      <p:commandButton value="Cargar lista" actionListener="#{oposicionRepLMB.cargaLista}" update="gacetaTable :forma:listaTable" oncomplete="dlgLista.show()" />
+                              </f:facet>
+                             <p:column headerText="N°" style="width:15px">
+                                <h:outputText value="#{rowIndex1+1}" />
+                            </p:column>
+                             <p:column style="width:15px" rendered="false">
+                                <f:facet name="header" >idRegistro</f:facet>
+                                <h:outputText value="#{gacetadataSelected.idRegistro}"  />
+                            </p:column>
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Tipo</f:facet>
+                                <h:outputText value="#{gacetadataSelected.tipo}"  />
+                            </p:column>
+                             <p:column style="width:15px" >
+                                <f:facet name="header" >Subtipo</f:facet>
+                                <h:outputText value="#{oposicionRepLMB.tipoM(gacetadataSelected.subtipo)}"  />
+                            </p:column>
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Registro</f:facet>
+                                <h:outputText value="#{gacetadataSelected.registro}"  />
+                            </p:column>
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Solicitud</f:facet>
+                                <h:outputText value="#{gacetadataSelected.solicitud}"  />
+                            </p:column>
+                             
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Denominación</f:facet>
+                                <h:outputText value="#{gacetadataSelected.titulo}" />
+                            </p:column>
+                            <p:column style="width:100px"   >
+                                <f:facet name="header">Clases</f:facet>
+                                <h:outputText value="#{gacetadataSelected.clase}" />
+                            </p:column>
+                           <p:column style="width:100px" >
+                                <f:facet name="header">Titular</f:facet>
+                                <h:outputText value="#{gacetadataSelected.titular}" />
+                            </p:column>
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Apoderado</f:facet>
+                                <h:outputText value="#{gacetadataSelected.apoderado}" />
+                            </p:column>
+                            <p:column style="width:200px" >
+                                <f:facet name="header">Imagen</f:facet>
+                                
+                                <img style="height: 100px;#{gacetadataSelected.diseno=='1'?'':'visibility: hidden;'}" src="#{facesContext.externalContext.requestContextPath}/MostrarReporte?content=image/gif&amp;g=v&amp;idRegistro=#{gacetadataSelected.idRegistro}" alt="" />
+                               
+                            </p:column>
+                                               
+                            <p:column style="width:15px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButtong" update=":forma:dlgBorrar2g" oncomplete="dlgBorrar2g.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{gacetadataSelected}" target="#{oposicionRepLMB.gacetadataSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                             <f:facet name="footer"  >   
+                                <p:spacer height="10" width="0" />
+                        <p:commandButton actionListener="#{oposicionRepLMB.searchLimpia}" update="gacetaTable :forma:oposicionTable" value="Limpiar..."  style="margin:0"/>  
+                      <p:commandButton value="Guardar" update=":forma:dlgGuardaL" oncomplete="dlgGuardaL.show()"/>
+                      <p:commandButton value="Cargar lista" actionListener="#{oposicionRepLMB.cargaLista}" update="gacetaTable :forma:listaTable" oncomplete="dlgLista.show()" />
+                                            
+                            </f:facet>
+                              
+                        </p:dataTable>
+                                 
+                                  </p:panelGrid>
+                             <p:dialog id="dlgGuardaL" header="Guardar lista" width="400px" height="200px" widgetVar="dlgGuardaL"  >
+
+                                    <p:panel style="width: 90%">
+                                        <h:panelGrid columns="1">
+
+                                            <h:outputText value="Nombre lista*:" />
+                                            <p:inputText value="#{oposicionRepLMB.listaName}"  style="width: 150px"/>
+                                             </h:panelGrid>                    
+                                    </p:panel>
+                                    <p:commandButton value="Guardar" actionListener="#{oposicionRepLMB.guardaLista}" oncomplete="dlgGuardaL.hide()" update=":forma:listaTable" />
+                                    <p:commandButton value="Cancelar"  oncomplete="dlgGuardaL.hide()" />
+
+                                </p:dialog>    
+                                <p:dialog id="dlgBorrar2g" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar2g"  >
+
+                                    <p:panel style="width: 90%">
+                                        <h:panelGrid columns="2">
+
+                                            <h:outputText value="Denominación:" />
+                                            <h:outputText value="#{oposicionRepLMB.gacetadataSelected.titulo}"/>
+                                             </h:panelGrid>                    
+                                    </p:panel>
+                                    <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraRepg(oposicionRepLMB.gacetadataSelected)}" oncomplete="dlgBorrar2g.hide()" update=":forma:gacetaTable" />
+                                    <p:commandButton value="Cancelar"  oncomplete="dlgBorrar2g.hide()" />
+
+                                </p:dialog>
+                                  
+                       </p:fieldset>
+                                
+                       
+                    </p:panel>
+              <hr/>
+              <p:fieldset legend="Búsqueda en gacetas">
+                                  <p:panelGrid  columns="2"  style="border-width: 0px"> 
+                                      <p:fieldset  >
+                                          
+                                      <p:panelGrid  columns="2"  style="border-width: 2px; vertical-align: top">
+                                      <p:commandButton actionListener="#{oposicionRepLMB.searchFonetico}"
+                                                       async="true" process="@form"
+                                                       update="oposicionTable coefi gacetaTable" 
+                                                       onstart="progress.start();statusDialog.show();" 
+                                                       oncomplete="statusDialog.hide();"
+                                                       value="Buscar fonético..."  style="margin:0" />  
+                                      <h:outputText value=""  />
+                                      <p:commandButton actionListener="#{oposicionRepLMB.searchFigurativo(0)}" rendered="false"
+                                                       async="true" process="@form"
+                                                       update="oposicionTable coefi gacetaTable" 
+                                                       onstart="progress.start();statusDialog.show();" 
+                                                       oncomplete="statusDialog.hide();"
+                                                       value="Buscar figurativo sin clase..."  style="margin:0" />  
+                                      
+                                      <p:commandButton actionListener="#{oposicionRepLMB.searchFigurativo(1)}" 
+                                                       async="true" process="@form"
+                                                       update="oposicionTable coefi gacetaTable" 
+                                                       onstart="progress.start();statusDialog.show();" 
+                                                       oncomplete="statusDialog.hide();"
+                                                       value="Buscar figurativo..."  style="margin:0" /> 
+                                      </p:panelGrid>
+                                      </p:fieldset>
+                                      
+                                      <p:fieldset legend="Parámetros">
+                                  <p:panelGrid  columns="4"  style="border-width: 0px"> 
+                                            <h:outputText value="Aprox. mínima" />
+                                            <p:inputText id="coefi" value="#{oposicionRepLMB.coeficiente}" >
+                                            <p:ajax update="coefi" event="blur" />
+                                            </p:inputText>
+                                      <h:outputText value="" />
+                                      <h:outputText value="" />
+                                       <h:outputText value="Núm. secuencia fonético" />
+                                       <p:inputText id="ocurrencia" value="#{oposicionRepLMB.numOcurrencias}" >
+                                            <p:ajax update="ocurrencia" event="blur" />
+                                            </p:inputText>
+                                      <h:outputText value="" />
+                                      <h:outputText value="" />
+                                      <h:outputText value="Fecha de publicación de:" />
+                                      <p:calendar id="fechaPub1" 
+                                                  value="#{oposicionRepLMB.fechaPub1}"  showButtonPanel="true" navigator="true" pattern="yyyy/MM/dd" locale="es"  >
+                                       
+                                    </p:calendar>
+                                      <h:outputText value="a:" />
+                                      <p:calendar id="fechaPub2" 
+                                                value="#{oposicionRepLMB.fechaPub2}"  showButtonPanel="true" navigator="true" pattern="yyyy/MM/dd" locale="es"  >
+                                      </p:calendar>
+                                      <p:selectBooleanCheckbox value="#{oposicionRepLMB.sinCeros}" />
+                                      <p:column colspan="2">
+                                          
+                                       <h:outputText value="No recuperar marcas con cero resultados" />   
+                                      </p:column>
+                                      <h:outputText value="" />
+                                      <h:outputText value="" />
+                                      
+                                  </p:panelGrid>
+                            </p:fieldset>
+                        
+                                  </p:panelGrid>
+                        </p:fieldset>
+                                       
+                       
+         
+<hr/>
+<p:progressBar ajax="true" widgetVar="progress" value="#{oposicionRepLMB.progress}"
+               labelTemplate="{value}%" styleClass="animated"   >
+</p:progressBar>
+<p:outputPanel autoUpdate="true" >  
+
+ <h:outputText value="#{oposicionRepLMB.message}" />
+
+</p:outputPanel>
+ <p:fieldset legend="Resultados">
+                    
+                            <p:outputPanel id="panelTabla" >         
+                    
+                         <p:dataTable id="oposicionTable" 
+                                     var="oposicionDataSelected" 
+                                     value="#{oposicionRepLMB.oposicionLazyDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex1"
+                                     lazy="true"
+                                    >
+                           <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectOposicionData}" update="oposicionTable " /> 
+
+                            <f:facet name="header">  
+                                <h:outputText value="#{oposicionRepLMB.message}" />
+                                <br/>
+                                <p:commandButton actionListener="#{oposicionRepLMB.oposicionLimpia()}" update=":forma:oposicionTable" value="Limpiar..."  style="margin:0"/>  
+                      
+                            </f:facet>
+                             <p:column headerText="N°" style="width:15px">
+                                <h:outputText value="#{rowIndex1+1}" />
+                            </p:column>
+                             <p:column style="width:15px" rendered="false">
+                                <f:facet name="header" >idRow</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.idRow}"  />
+                            </p:column>
+                             <p:column style="width:15px" >
+                                <f:facet name="header" >Tipo</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.tipo}"  />
+                            </p:column>
+                             <p:column style="width:25px" >
+                                <f:facet name="header" >Subtipo</f:facet>
+                                <h:outputText value="#{oposicionRepLMB.tipoM(oposicionDataSelected.subtipo)}"  />
+                            </p:column>
+                           <p:column style="width:50px" >
+                                <f:facet name="header">Solicitud</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.solicitud}" />
+                            </p:column>
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Denominación</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.denominacion}" />
+                            </p:column>
+                            <p:column style="width:50px" >
+                                <f:facet name="header">Clases</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.clases}" />
+                            </p:column>
+                           <p:column style="width:100px" >
+                                <f:facet name="header">Titular</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.titular}" />
+                            </p:column>
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Apoderado</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.apoderado}" />
+                            </p:column>
+                         
+                            <p:column style="width:150px" >
+                                <f:facet name="header">Imagen</f:facet>
+                                
+                                <img style="height: 100px;#{oposicionDataSelected.diseno=='1'?'':'visibility: hidden;'}" src="#{facesContext.externalContext.requestContextPath}/MostrarReporte?content=image/gif&amp;g=v&amp;idRegistro=#{oposicionDataSelected.idRegistro}" alt="" />
+                               
+                            </p:column>
+                            
+                             <p:column style="width:30px"  >
+                                <f:facet name="header">Resultados</f:facet>
+                                <h:outputText value="#{oposicionDataSelected.numResultados}" />
+                            </p:column>
+                           <p:column style="width:50px" rendered="#{oposicionRepLMB.tipoBusqueda==2?'true':'false'}">
+                                <f:facet name="header">Reporte</f:facet>
+                                <p:commandLink id="downloadLink1" actionListener="#{oposicionRepLMB.generarReporte(oposicionDataSelected.reporte)}" rendered="#{oposicionDataSelected.reporte!=null?true:false}" update="oposicionTable"
+                                                   onstart="statusDialog.show();"           oncomplete="reporteDialog.show();statusDialog.hide();" >  
+                                        <p:graphicImage value="#{oposicionDataSelected.reporte!=null? '/images/pdf.png':'/images/pdf.png'}" style="border-style: none"/>
+                                    </p:commandLink> 
+                            </p:column>
+                            <p:column style="width:50px" rendered="#{oposicionRepLMB.tipoBusqueda==2?'false':'true'}">
+                                <f:facet name="header">ReporteF</f:facet>
+                                <p:commandLink id="downloadLink2" actionListener="#{oposicionRepLMB.generarReporteFig(oposicionDataSelected)}" update="oposicionTable"
+                                                   onstart="statusDialog.show();"           oncomplete="reporteDialog.show();statusDialog.hide();" >  
+                                        <p:graphicImage value="/images/pdf.png" style="border-style: none"/>
+                                    </p:commandLink> 
+                            </p:column>
+                            <p:column style="width:50px" rendered="#{oposicionRepLMB.tipoBusqueda==2?'false':'true'}">
+                                <f:facet name="header">ReporteF2</f:facet>
+                                <p:commandLink id="downloadLinkf2" actionListener="#{oposicionRepLMB.generarReporteFig2(oposicionDataSelected)}" update="oposicionTable"
+                                                   onstart="statusDialog.show();"           oncomplete="reporteDialog.show();statusDialog.hide();" >  
+                                        <p:graphicImage value="/images/pdf.png" style="border-style: none"/>
+                                    </p:commandLink> 
+                            </p:column>
+                            <p:column style="width:30px" rendered="#{oposicionRepLMB.tipoBusqueda==2?'true':'false'}">
+                                <f:facet name="header">Detalle</f:facet>
+                                 <p:commandButton value="+" icon="ui-icon-search"  oncomplete="dlgDetalleFonetico.show();" update=":forma:dlgDetalleFonetico oposicionTable" 
+                                                  action="#{oposicionRepLMB.setFonetico(oposicionRepLMB.oposicionDataSelected.fonetico) }"           >
+                                     <f:setPropertyActionListener value="#{oposicionDataSelected}" target="#{oposicionRepLMB.oposicionDataSelected }" />
+                                      
+                                 </p:commandButton>
+                            </p:column>
+                            <p:column style="width:30px" rendered="#{oposicionRepLMB.tipoBusqueda==2?'false':'true'}">
+                                <f:facet name="header">Detalle</f:facet>
+                                 <p:commandButton value="+" icon="ui-icon-search" oncomplete="dlgDetalleFigurativo.show();" update=":forma:dlgDetalleFigurativo  oposicionTable"
+                                                  action="#{oposicionRepLMB.setFigurativo(oposicionRepLMB.oposicionDataSelected.figurativo) }"           >
+                                     <f:setPropertyActionListener value="#{oposicionDataSelected}" target="#{oposicionRepLMB.oposicionDataSelected }" />
+                                      
+                                 </p:commandButton>
+                            </p:column>
+                            <p:column style="width:15px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButton" update=":forma:dlgBorrar2" oncomplete="dlgBorrar2.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{oposicionDataSelected}" target="#{oposicionRepLMB.oposicionDataSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                            
+                             <f:facet name="footer"  >   
+                                <p:spacer height="10" width="0" />
+                        
+                            </f:facet>
+                              
+                        </p:dataTable> 
+                         <p:dialog  widgetVar="statusDialog" width="100%" height="1200px" appendToBody="true"
+                                   style="box-shadow: 0px 0px 0px #888888;
+                                   background-color: rgba(0, 0, 0, 0.4);  
+                                   position: fixed; 
+                                    z-index: 1; 
+                                    left: 0;
+                                    top: 0;
+                                    width: 100%; 
+                                    height: 100%; 
+                                    overflow: auto; "
+                                   showHeader="false"  draggable="false" closable="false" resizable="false">
+                             <table border="0" style="position: absolute;left: 45%; top: 200px; height: 110px;width: 110px">
+                                 <tr>
+                                     <td>
+                                         <h:graphicImage value="/images/loader_blue.gif" height="100px" width="100px"
+                                                            
+                                                            ></h:graphicImage>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td >
+                                         <p:commandButton type="button" value="Detener" icon="ui-icon-close" style="text-align: right;  "  rendered="false"
+                                                          onclick="location.reload();"/></td>
+                                 </tr>
+                             </table>
+                            
+                    </p:dialog>
+                            <p:dialog id="dlgReporte" header="Reporte de vigilancias" width="1000px" height="500px" widgetVar="dlgReporte"  >
+
+                                   
+                             <p:panelGrid  columns="1"  style="border-width: 0px;width: 90%"> 
+                                <p:dataTable id="reporteTable" 
+                                     var="reporteSelected" 
+                                     value="#{oposicionRepLMB.reporteDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="5"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex1"
+                                    >
+                           <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectReporteData}" update="reporteTable :forma:oposicionTable" onstart="statusDialog.show();"  oncomplete="dlgReporte.hide();statusDialog.hide();"  /> 
+
+                            <f:facet name="header">  
+                                <h:outputText value=""/>
+                            </f:facet>
+                             
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Reporte</f:facet>
+                                <h:outputText value="#{reporteSelected.idRep}"  />
+                            </p:column>
+                            <p:column style="width:15px" >
+                                <f:facet name="header" >Nombre de Reporte</f:facet>
+                                <h:outputText value="#{reporteSelected.nombre}"  />
+                            </p:column>
+                             
+                            <p:column style="width:100px" >
+                                <f:facet name="header">Fecha</f:facet>
+                                <h:outputText value="#{reporteSelected.fecha}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText>
+                            </p:column>
+                                  <p:column style="width:15px" >
+                                <f:facet name="header" >Tipo</f:facet>
+                                <h:outputText value="#{reporteSelected.tipo==1?'Figurativo':'Fonético'}"  />
+                            </p:column>             
+                            <p:column style="width:15px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButtonr" update=":forma:dlgBorrar2r" oncomplete="dlgBorrar2r.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{reporteSelected}" target="#{oposicionRepLMB.reporteSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                             <f:facet name="footer"  >   
+                                <p:spacer height="10" width="0" />
+                       
+                                            
+                            </f:facet>
+                              
+                        </p:dataTable>
+                                 <p:dialog id="dlgBorrar2r" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar2r"  >
+
+                                    <p:panel style="width: 90%">
+                                        <h:panelGrid columns="2">
+
+                                            <h:outputText value="Nombre:" />
+                                            <h:outputText value="#{oposicionRepLMB.reporteSelected.nombre}"/>
+                                             </h:panelGrid>                    
+                                    </p:panel>
+                                    <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraRepr(oposicionRepLMB.reporteSelected)}" oncomplete="dlgBorrar2r.hide()" update=":forma:reporteTable :forma:dlgReporte" />
+                                    <p:commandButton value="Cancelar"  oncomplete="dlgBorrar2r.hide()" />
+
+                                </p:dialog>
+                             </p:panelGrid>
+                            </p:dialog>
+                        
+                       
+
+                        <p:commandButton value="Exportar" ajax="false" update="oposicionTable "  onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                            <p:fileDownload value="#{oposicionRepLMB.file1}" />
+                        </p:commandButton>
+                    <script type="text/javascript">
+                        function start() {
+                            statusDialog.show();
+                        }
+
+                        function stop() {
+                            statusDialog.hide();
+                        }
+                        </script>
+ 
+                        <p:commandButton value="Guardar" update=":forma:dlgGuardaR" oncomplete="dlgGuardaR.show()" />
+                      <p:commandButton value="Cargar Reportes" actionListener="#{oposicionRepLMB.cargaReporte}" update="oposicionTable :forma:reporteTable" oncomplete="dlgReporte.show()" />
+                             
+                                  <p:dialog id="dlgGuardaR" header="Guardar reporte" width="400px" height="200px" widgetVar="dlgGuardaR"  >
+
+                                    <p:panel style="width: 90%">
+                                        <h:panelGrid columns="1">
+
+                                            <h:outputText value="Nombre reporte*:" />
+                                            <p:inputText value="#{oposicionRepLMB.reporteName}"  style="width: 150px"/>
+                                             </h:panelGrid>                    
+                                    </p:panel>
+                                    <p:commandButton value="Guardar" actionListener="#{oposicionRepLMB.guardaReporte}" 
+                                                     onstart="statusDialog.show();" 
+                                                     oncomplete="statusDialog.hide();dlgGuardaR.hide();" update=":forma:reporteTable" />
+                                    <p:commandButton value="Cancelar"  oncomplete="dlgGuardaR.hide()" />
+
+                                </p:dialog> 
+            
+                        
+
+                            </p:outputPanel>
+                    <p:dialog id="reporteDialog" closeOnEscape="true" width="1200" height="500"  maximizable="true"
+                              header="Vista Previa" widgetVar="reporteDialog" styleClass="ui-widget-overlay"
+                              position="center top" rendered="true" 
+                              onShow="document.getElementById('iframeFile').src='#{facesContext.getCurrentInstance().getExternalContext().getRequest().isSecure()==false?'http':'https'}://#{facesContext.externalContext.requestServerName}:#{facesContext.externalContext.requestServerPort}#{facesContext.externalContext.requestContextPath}/MostrarReporte';">
+                        <p:resizable onResize="resizeIframe()" for="reporteDialog"/>
+                        <h:panelGrid  style="width: 100%">
+                            <script language="javascript" type="text/javascript">
+                                function resizeIframe() {
+                                    var dlg = document.getElementById('forma:reporteDialog');
+                                    var obj = document.getElementById('iframeFile');
+                                    //alert(dlg.offsetHeight);
+                                    //alert(obj.style.height);
+                                    obj.style.height = dlg.offsetHeight + 'px';
+                                    obj.style.width = dlg.offsetWidth + 'px';
+
+                                    //alert(obj.style.height);
+                                }
+                            </script>
+                            <iframe id="iframeFile" src="" width="750px" height="425px" onload='javascript:resizeIframe(this);'/>
+                        </h:panelGrid>
+                        <p:commandButton value="Cancelar"  oncomplete="reporteDialog.hide()" />
+                    </p:dialog>
+                        
+                        <p:dialog id="dlgBorrar2" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar2"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                
+                                <h:outputText value="Denominación:" />
+                                <h:outputText value="#{oposicionRepLMB.oposicionDataSelected.denominacion}"/>
+                                 </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraRep(oposicionRepLMB.oposicionDataSelected)}" oncomplete="dlgBorrar2.hide()" update=":forma:oposicionTable" />
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrar2.hide()" />
+
+                    </p:dialog> 
+                        <!--             dlg              -->
+                    
+                        <p:dialog id="dlgDetalleFonetico" header="Detalle fonético: #{oposicionRepLMB.oposicionDataSelected.denominacion} en las clases: #{oposicionRepLMB.oposicionDataSelected.clases}" 
+                                  width="1100" height="400" widgetVar="dlgDetalleFonetico" closeOnEscape="true"  maximizable="true"  styleClass="ui-widget-overlay" >
+
+                         <p:panel style="width: 99%;font-size: 10px" header="Resultados">
+                        
+                        
+                        
+                         <p:dataTable id="foneticTable" 
+                                     var="foneticDataSelected1" 
+                                     value="#{oposicionRepLMB.foneticDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex"
+                                     >
+                            
+                             <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectGacetadata}"   
+                                        update="foneticTable " /> 
+
+                            <f:facet name="header">  
+
+                            </f:facet>
+                             <p:column headerText="N°" style="width:25px" >
+                                 <h:outputText value="#{rowIndex+1}" />
+                            </p:column>
+                            <p:column style="width:25px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButton" update=":forma:dlgBorrar" oncomplete="dlgBorrar.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{foneticDataSelected1}" target="#{oposicionRepLMB.foneticDataSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <p:column style="width:50px" rendered="false" exportable="false">
+                                <f:facet name="header" >ID</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.idRegistro}"  />
+                            </p:column>
+                             <p:column style="width:15px" rendered="false" >
+                                <f:facet name="header" >Tipo</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.tipo}"  />
+                            </p:column>
+                            <p:column style="width:50px" exportable="false">
+                                <f:facet name="header">Tipo</f:facet>
+                                <h:outputText value="#{oposicionRepLMB.tipoM(foneticDataSelected1.registro)}" />
+                            </p:column>
+                            <p:column style="width:50px">
+                                <f:facet name="header">Solicitud</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.solicitud}" />
+                            </p:column>
+                            <p:column style="width:100px">
+                                <f:facet name="header">Denominación</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.titulo}" />
+                            </p:column>
+                            <p:column style="width:50px">
+                                <f:facet name="header">Clases</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.clase}" />
+                            </p:column>
+                            <p:column style="width:100px">
+                                <f:facet name="header">Titular</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.titular}" />
+                            </p:column>
+                            <p:column style="width:100px">
+                                <f:facet name="header">Gaceta</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.gaceta}" />
+                            </p:column>
+                              <p:column style="width:50px" rendered="false">
+                                <f:facet name="header">Aprox.</f:facet>
+                                <h:outputText value="#{foneticDataSelected1.coeficiente}" />
+                            </p:column>
+                            
+                         <f:facet name="footer" >   
+                                <p:spacer height="10" width="0" />
+
+                            </f:facet>
+                        </p:dataTable> 
+                                     <h:panelGrid columns="2" style="alignment-baseline: central" >  
+                            <p:panel header="Exportar">  
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/excel.png" height="20" style="border-width: 0px" />  
+                                    <p:dataExporter type="xls" target="foneticTable" fileName="DetalleFonetico" postProcessor="#{gacetaMB.postProcessXLS}"/>  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/pdf.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="pdf" target="foneticTable" fileName="DetalleFonetico" preProcessor="#{gacetaMB.preProcessPDF}"/>  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/csv.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="csv" target="foneticTable" fileName="DetalleFonetico" />  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/xml.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="xml" target="foneticTable" fileName="DetalleFonetico" />  
+                                </h:commandLink>  
+                            </p:panel>  
+
+                        </h:panelGrid>  
+                         </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{oposicionRepLMB.guardaDetalle}" 
+                                       update="forma :forma:oposicionTable"  >
+                        </p:commandButton>  
+                        <p:commandButton value="Cancelar"   oncomplete="dlgDetalleFonetico.hide()" />
+ 
+                        
+                        <p:dialog id="dlgBorrar" header="Eliminar" width="500" height="100" widgetVar="dlgBorrar"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                <h:inputHidden value="#{oposicionRepLMB.foneticDataSelected.idRegistro}" /> 
+                                <h:inputHidden value="#{oposicionRepLMB.foneticDataSelected.titulo}" /> 
+                               
+                                <h:outputText value="Denominación:" />
+                                <h:outputText value="#{oposicionRepLMB.foneticDataSelected.titulo}"/>
+                                 </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraFonetico(oposicionRepLMB.foneticDataSelected)}" oncomplete="dlgBorrar.hide()" update=":forma:foneticTable" />
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrar.hide()" />
+
+                    </p:dialog> 
+                    </p:dialog> 
+                        
+                      <p:dialog id="dlgDetalleFigurativo" header="Detalle figurativo:[#{oposicionRepLMB.oposicionDataSelected.solicitud}] #{oposicionRepLMB.oposicionDataSelected.denominacion} 
+                                en las clases: #{oposicionRepLMB.oposicionDataSelected.clases}
+                                con código Viena [#{oposicionRepLMB.getCodigoVienaV(oposicionRepLMB.oposicionDataSelected.solicitud)}]" 
+                                width="1200" height="450" widgetVar="dlgDetalleFigurativo" closeOnEscape="true"  maximizable="true"  styleClass="ui-widget-overlay" >
+
+                         <p:panel style="width: 99%;font-size: 10px" header="Resultados">
+                        
+                        
+                        
+                         <p:dataTable id="figurativoTable" 
+                                     var="figurativoDataSelected1" 
+                                     value="#{oposicionRepLMB.figurativoDataModel}" 
+                                     selectionMode="single"
+                                     resizableColumns="true" 
+                                     paginator="true" rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15,25"
+                                     emptyMessage="No se encontraron registros"
+                                     liveResize="true"
+                                     rowIndexVar="rowIndex"
+                                     scrollHeight="true"
+                                     scrollWidth="true"
+                                     >
+                            
+                             <p:ajax event="rowSelect" listener="#{oposicionRepLMB.onRowSelectGacetadataF}"   
+                                        update="figurativoTable " /> 
+
+                            <f:facet name="header">  
+
+                            </f:facet>
+                             <p:column headerText="N°" style="width:25px">
+                                <h:outputText value="#{rowIndex+1}" />
+                            </p:column>
+                            <p:column style="width:25px" headerText="Borrar" exportable="false">  
+                                <p:commandButton id="deleteButtonF" update=":forma:dlgBorrarF" oncomplete="dlgBorrarF.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{figurativoDataSelected1}" target="#{oposicionRepLMB.figurativoDataSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <p:column style="width:50px" rendered="false">
+                                <f:facet name="header" >ID</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.idRegistro}"  />
+                            </p:column>
+                             <p:column style="width:15px" rendered="false">
+                                <f:facet name="header" >Tipo</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.tipo}"  />
+                            </p:column>
+                            <p:column style="width:50px">
+                                <f:facet name="header">Tipo</f:facet>
+                                <h:outputText value="#{oposicionRepLMB.tipoM(figurativoDataSelected1.registro)}" />
+                            </p:column>
+                            <p:column style="width:50px">
+                                <f:facet name="header">Solicitud</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.solicitud}" />
+                            </p:column>
+                            <p:column style="width:100px">
+                                <f:facet name="header">Denominación</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.titulo}" />
+                            </p:column>
+                            <p:column style="width:50px">
+                                <f:facet name="header">Clases</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.clase}" />
+                            </p:column>
+                            <p:column style="width:100px">
+                                <f:facet name="header">Titular</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.titular}" />
+                            </p:column>
+                            <p:column  style="width:100px" styleClass="stretch" >
+                                <f:facet name="header">Código Viena</f:facet>
+                                <div><h:outputText escape="false" value="#{oposicionRepLMB.replaceComa(figurativoDataSelected1.tipoGaceta)}" /></div>
+                            </p:column>
+                            <p:column  style="width:55px" styleClass="stretch" >
+                                <f:facet name="header">Gaceta</f:facet>
+                                <div><h:outputText escape="false" value="#{figurativoDataSelected1.gaceta}" /></div>
+                            </p:column>
+                             <p:column style="width:200px" >
+                                <f:facet name="header">Imagen</f:facet>
+                                
+                                <img style="height: 100px;#{figurativoDataSelected1.diseno=='1'?'':'visibility: hidden;'}" src="#{facesContext.externalContext.requestContextPath}/MostrarReporte?content=image/gif&amp;idRegistro=#{figurativoDataSelected1.idRegistro}" alt="" />
+                               
+                            </p:column>
+                              <p:column style="width:50px" >
+                                <f:facet name="header">Núm oc.</f:facet>
+                                <h:outputText value="#{figurativoDataSelected1.pagina}" />
+                            </p:column>
+                            
+                         <f:facet name="footer" >   
+                                <p:spacer height="10" width="0" />
+
+                            </f:facet>
+                        </p:dataTable> 
+                         </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{oposicionRepLMB.guardaDetalleF}" 
+                                       update="forma :forma:oposicionTable"  >
+                        </p:commandButton>  
+                        <p:commandButton value="Cancelar"   oncomplete="dlgDetalleFigurativo.hide()" />
+                    <h:panelGrid columns="2" style="alignment-baseline: central" >  
+                            <p:panel header="Exportar">  
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/excel.png" height="20" style="border-width: 0px" />  
+                                    <p:dataExporter type="xls" target="figurativoTable" fileName="DetalleFigurativo" postProcessor="#{gacetaMB.postProcessXLS}"/>  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/pdf.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="pdf" target="figurativoTable" fileName="DetalleFigurativo" preProcessor="#{gacetaMB.preProcessPDF}"/>  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/csv.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="csv" target="figurativoTable" fileName="DetalleFigurativo" />  
+                                </h:commandLink>  
+
+                                <h:commandLink>  
+                                    <p:graphicImage value="/images/xml.png" height="20" style="border-width: 0px"/>  
+                                    <p:dataExporter type="xml" target="figurativoTable" fileName="DetalleFigurativo" />  
+                                </h:commandLink>  
+                            </p:panel>  
+
+                        </h:panelGrid>  
+                        
+                        <p:dialog id="dlgBorrarF" header="Eliminar" width="500" height="100" widgetVar="dlgBorrarF"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                <h:inputHidden value="#{oposicionRepLMB.figurativoDataSelected.idRegistro}" /> 
+                                <h:inputHidden value="#{oposicionRepLMB.figurativoDataSelected.titulo}" /> 
+                               
+                                <h:outputText value="Denominación:" />
+                                <h:outputText value="#{oposicionRepLMB.figurativoDataSelected.titulo}"/>
+                                 </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Borrar" actionListener="#{oposicionRepLMB.borraFigurativo(oposicionRepLMB.figurativoDataSelected)}" oncomplete="dlgBorrarF.hide()" update=":forma:figurativoTable" />
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrarF.hide()" />
+
+                    </p:dialog> 
+                    </p:dialog> 
+                        
+ </p:fieldset> 
+                </h:form>
+            </h:body>
+
+        </f:view>
+    </ui:define>
+</ui:composition>

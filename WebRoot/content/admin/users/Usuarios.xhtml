@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" > 
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../support/templates/ComplexTemplate.xhtml">
+
+    <ui:define name="pageName">Usuarios</ui:define>
+    <ui:define name="content">
+
+        <f:view encoding="UTF-8" contentType="text/html">
+            <h:head>
+                <title>#{translatedMessage['title.message']}</title>
+            </h:head>
+            <h:body>
+                <h:form id="forma" >
+                    <p:panel style="width: 90%"  >
+                        <p:dataTable 
+                            id="usuarioTable" 
+                            var="usuarioSelected" 
+                            value="#{usuarioMB.usuarioDataModel}" 
+                            selectionMode="single"
+                            resizableColumns="true" 
+                            paginator="true" rows="15"
+                            paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                            rowsPerPageTemplate="5,10,15,25"
+                            emptyMessage="No se encontraron registros"
+                            liveResize="true"
+                            rowIndexVar="rowIndex1"
+
+                            >
+                            <p:ajax event="rowSelect" listener="#{usuarioMB.onRowSelectUsuarioData}" update="usuarioTable " /> 
+
+                            <f:facet name="header">  
+                                Lista de Usuarios
+                            </f:facet>
+                            <p:column style="width:10px">  
+                                <f:facet name="header">Editar</f:facet>
+                                <p:commandButton id="selectButton" update=":forma:dlgUsuario" oncomplete="dlgUsuario.show()" icon="ui-icon-search" title="Editar">  
+                                    <f:setPropertyActionListener value="#{usuarioSelected}" target="#{usuarioMB.usuarioSelected}" />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <p:column style="width:10px">  
+                                <f:facet name="header">Usuario</f:facet>
+                                <p:commandButton id="deleteButton" update=":forma:dlgBorrar" oncomplete="dlgBorrar.show()"  icon="ui-icon-closethick" title="Borrar">  
+                                    <f:setPropertyActionListener value="#{usuarioSelected}" target="#{usuarioMB.usuarioSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+                            <p:column style="width:10px">  
+                                <f:facet name="header">Sessión</f:facet>
+                                <p:commandButton id="deleteButton1" update=":forma:dlgBorrar1" oncomplete="dlgBorrar1.show()"  icon="ui-icon-closethick" title="Borrar" rendered="#{usuarioSelected.sessionId!=null?'true':'false'}">  
+                                    <f:setPropertyActionListener value="#{usuarioSelected}" target="#{usuarioMB.usuarioSelected}"  />  
+                                </p:commandButton>  
+                            </p:column> 
+
+                            <p:column style="width:5px"><f:facet name="header">Id</f:facet><h:outputText value="#{usuarioSelected.idUsuario}" /></p:column>
+                            <p:column><f:facet name="header">Sessión</f:facet><h:outputText value="#{usuarioSelected.sessionId}" /></p:column>
+                            <p:column  ><f:facet name="header">usuario</f:facet><h:outputText value="#{usuarioSelected.usuario}" /></p:column>
+                            <p:column  ><f:facet name="header">clave</f:facet><h:outputText value="#{usuarioSelected.clave}" /></p:column>
+                            <p:column  ><f:facet name="header">correo</f:facet><h:outputText value="#{usuarioSelected.correo}" /></p:column>
+                            <p:column  filterBy="#{usuarioSelected.nombre}"><f:facet name="header">nombre</f:facet><h:outputText value="#{usuarioSelected.nombre}" /></p:column>
+                            <p:column  ><f:facet name="header">apaterno</f:facet><h:outputText value="#{usuarioSelected.apaterno}" /></p:column>
+                            <p:column  ><f:facet name="header">amaterno</f:facet><h:outputText value="#{usuarioSelected.amaterno}" /></p:column>
+                            <p:column  ><f:facet name="header">fecha_creacion</f:facet><h:outputText value="#{usuarioSelected.fechaCreacion}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+                            <p:column  ><f:facet name="header">cuenta_no_expirada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.cuentaNoExpirada}" disabled="true" /></p:column>
+                            <p:column  ><f:facet name="header">cuenta_no_bloqueada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.cuentaNoBloqueada}" disabled="true" /></p:column>
+                            <p:column  rendered="false"><f:facet name="header">credencial_no_expirada</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.credencialNoExpirada}" disabled="true"  /></p:column>
+                            <p:column  ><f:facet name="header">habilitado</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.habilitado}" disabled="true" /></p:column>
+                            <p:column  ><f:facet name="header">contador_intentos_fallidos</f:facet><h:outputText value="#{usuarioSelected.contadorIntentosFallidos}" /></p:column>
+                            <p:column  rendered="false"><f:facet name="header">instante_de_bloqueo</f:facet><h:outputText value="#{usuarioSelected.instanteDeBloqueo}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+                            <p:column  rendered="false"><f:facet name="header">pregunta_secreta</f:facet><h:outputText value="#{usuarioSelected.preguntaSecreta}" /></p:column>
+                            <p:column  rendered="false"><f:facet name="header">respuesta_secreta</f:facet><h:outputText value="#{usuarioSelected.respuestaSecreta}" /></p:column>
+                            <p:column  ><f:facet name="header">id_de_seguridad</f:facet><h:outputText value="#{usuarioSelected.idSeguridad}" /></p:column>
+                            <p:column  ><f:facet name="header">ventana_para_id_seguridad</f:facet><h:outputText value="#{usuarioSelected.ventanaParaIdSeguridad}" ><f:convertDateTime pattern="yyyy/MM/dd HH:mm" /> </h:outputText></p:column>
+
+                            <p:column><f:facet name="header">Activo</f:facet><p:selectBooleanCheckbox value="#{usuarioSelected.activo}" disabled="true" /></p:column>
+                            <f:facet name="footer">  
+                            </f:facet>
+
+                        </p:dataTable>   
+                    </p:panel>
+
+                    <p:dialog id="dlgBorrar" header="Borrar usuario" width="400" height="150" widgetVar="dlgBorrar"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+
+                                
+                                <h:outputText value="Nombre:" />
+                                <h:outputText value="[#{usuarioMB.usuarioSelected.idUsuario}] #{usuarioMB.usuarioSelected.nombre} #{usuarioMB.usuarioSelected.apaterno} #{usuarioMB.usuarioSelected.amaterno}" />
+                            </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Borrar" actionListener="#{usuarioMB.borra}" oncomplete="dlgBorrar.hide()" update=":forma:usuarioTable" >
+                            
+                        </p:commandButton> 
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrar.hide()" />
+
+                    </p:dialog> 
+                    <p:dialog id="dlgBorrar1" header="Eliminar sessión" width="400" height="150" widgetVar="dlgBorrar1"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="Nombre:" />
+                                <h:outputText value="[#{usuarioMB.usuarioSelected.sessionId}] #{usuarioMB.usuarioSelected.nombre} #{usuarioMB.usuarioSelected.apaterno} #{usuarioMB.usuarioSelected.amaterno}" />
+                            </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Terminar sesión" actionListener="#{usuarioMB.borraSession(usuarioMB.usuarioSelected)}" oncomplete="dlgBorrar1.hide()" update=":forma:usuarioTable" >
+                         <f:setPropertyActionListener value="#{usuarioSelected}" target="#{usuarioMB.usuarioSelected}"  />  
+                        </p:commandButton>   
+                        <p:commandButton value="Cancelar"  oncomplete="dlgBorrar1.hide()" />
+
+                    </p:dialog> 
+                    <p:dialog id="dlgUsuario" header="Editar usuario" width="550" height="400" widgetVar="dlgUsuario"  >
+
+                        <p:panel style="width: 90%">
+                            <h:panelGrid columns="2">
+                                <h:outputText value="idUsuario" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.idUsuario}" />
+                                <h:outputText value="usuario" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.usuario}" />
+                                <h:outputText value="clave" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.clave}" />
+                                <h:outputText value="correo" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.correo}" />
+                                <h:outputText value="nombre" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.nombre}" />
+                                <h:outputText value="apaterno" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.apaterno}" />
+                                <h:outputText value="amaterno" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.amaterno}" />
+                                <h:outputText value="fecha_creacion" />
+                                <p:calendar value="#{usuarioMB.usuarioSelected.fechaCreacion}" pattern="yyyy/MM/dd  HH:mm"/>
+                                <h:outputText value="cuenta_no_expirada" />
+                                <p:selectBooleanCheckbox value="#{usuarioMB.usuarioSelected.cuentaNoExpirada}" />
+                                <h:outputText value="cuenta_no_bloqueada" />
+                                <p:selectBooleanCheckbox value="#{usuarioMB.usuarioSelected.cuentaNoBloqueada}" />
+                                <h:outputText value="credencial_no_expirada" />
+                                <p:selectBooleanCheckbox value="#{usuarioMB.usuarioSelected.credencialNoExpirada}" />
+                                <h:outputText value="habilitado" />
+                                <p:selectBooleanCheckbox value="#{usuarioMB.usuarioSelected.habilitado}" />
+                                <h:outputText value="contador_intentos_fallidos" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.contadorIntentosFallidos}" />
+                                <h:outputText value="instante_de_bloqueo" />
+                                <p:calendar value="#{usuarioMB.usuarioSelected.instanteDeBloqueo}" pattern="yyyy/MM/dd  HH:mm"/>
+                                <h:outputText value="pregunta_secreta" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.preguntaSecreta}" />
+                                <h:outputText value="respuesta_secreta" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.respuestaSecreta}" />
+                                <h:outputText value="id_de_seguridad" />
+                                <h:inputText value="#{usuarioMB.usuarioSelected.idSeguridad}" />
+                                <h:outputText value="ventana_para_id_seguridad" />
+                                <p:calendar value="#{usuarioMB.usuarioSelected.ventanaParaIdSeguridad}" pattern="yyyy/MM/dd  HH:mm"/>
+                                <h:outputText value="Activo" />
+                                <p:selectBooleanCheckbox value="#{usuarioMB.usuarioSelected.activo}"  />
+
+
+
+                            </h:panelGrid>                    
+                        </p:panel>
+                        <p:commandButton value="Guardar" actionListener="#{usuarioMB.modifica}" oncomplete="dlgUsuario.hide()" update=":forma:usuarioTable" />
+                        <p:commandButton value="Cancelar"  oncomplete="dlgUsuario.hide()" />
+
+                    </p:dialog>   
+
+
+
+
+                </h:form>
+            </h:body>
+
+        </f:view>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mx.com.oposicion.persistence.ReporteFoneticoMapper">
+
+
+	<sql id="camposReporteFonetico">
+                        idGac,
+                        idReg,
+                        idRegistro, 
+                        tipo, 
+                        subtipo, 
+                        registro, 
+                        solicitud, 
+                        denominacion, 
+                        clase,
+                        titular, 
+                        apoderado, 
+                        gaceta,
+                        viena, 
+                        coeficiente,
+                        ocurrencia
+        </sql>
+
+
+    <resultMap id="reporteFoneticoMap" type="ReporteFoneticoType" >
+        <result property="idGac" column="idGac"/>
+        <result property="idReg" column="idReg"/>
+        <result property="idRegistro" column="idRegistro"/>
+        <result property="tipo" column="tipo"/>
+        <result property="subtipo" column="subtipo"/>
+        <result property="registro" column="registro"/>
+        <result property="solicitud" column="solicitud"/>
+        <result property="denominacion" column="denominacion"/>
+        <result property="clase" column="clase"/>
+        <result property="titular" column="titular"/>
+        <result property="apoderado" column="apoderado"/>
+        <result property="gaceta" column="gaceta"/>
+        <result property="viena" column="viena"/>
+        <result property="coeficiente" column="coeficiente"/>
+        <result property="ocurrencia" column="ocurrencia"/>
+    </resultMap>
+
+
+    <select id="findById" resultMap="reporteFoneticoMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposReporteFonetico"/>
+		FROM 
+			reporte_fonetico
+		WHERE 
+			idReg=#{idReg}
+                ORDER BY idGac
+    </select>
+
+
+    <select id="getAll" resultMap="reporteFoneticoMap">
+		SELECT 
+			<include refid="camposReporteFonetico"/>
+		FROM 
+			reporte_fonetico 
+    </select>
+
+
+	<insert id="insert" parameterType="ReporteFoneticoType">
+		INSERT INTO reporte_fonetico( <include refid="camposReporteFonetico"/> )
+ 		VALUES(
+ 			null,
+			#{idReg},
+			#{idRegistro}, 
+                        #{tipo}, 
+                        #{subtipo}, 
+                        #{registro}, 
+                        #{solicitud}, 
+                        #{denominacion}, 
+                        #{clase},
+                        #{titular}, 
+                        #{apoderado}, 
+                        #{gaceta},
+                        #{viena}, 
+                        #{coeficiente},
+                        #{ocurrencia}
+                
+		)	
+		<selectKey keyProperty="idGac" resultType="int">
+			SELECT last_insert_id() AS idGac
+		</selectKey>
+    </insert>
+
+
+	<update id="update" parameterType="ReporteFoneticoType">
+			UPDATE reporte_fonetico SET
+				idReg=#{idReg},
+                                idRegistro=#{idRegistro},
+                                tipo=#{tipo},
+                                subtipo=#{subtipo},
+                                registro=#{registro},
+                                solicitud=#{solicitud},
+                                denominacion=#{denominacion},
+                                clase=#{clase},
+                                titular=#{titular},
+                                apoderado=#{apoderado},
+                                gaceta=#{gaceta},
+                                viena=#{viena},
+                                coeficiente=#{coeficiente},
+                                ocurrencia=#{ocurrencia}
+			WHERE
+              	idGac = #{idGac}
+    </update>
+
+
+	<update id="delete" parameterType="ReporteFoneticoType">
+			delete from  reporte_fonetico 
+			WHERE
+              	idReg = #{idReg}
+    </update>
+
+
+</mapper>

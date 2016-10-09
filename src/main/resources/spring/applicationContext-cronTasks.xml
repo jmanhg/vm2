@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    <!--          
+    <bean id="cron1" class="mx.com.oposicion.support.Cron"/>
+    
+    <bean id="keepAliveDB"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="cron1" />
+        <property name="targetMethod" value="getUsuariosInfo" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="keepAliveDBTrigger" 
+    	class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="keepAliveDB" />
+        <property name="repeatInterval" value="1000" />
+    </bean>
+    
+    <bean id="catalogsUpdate"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="cron1" />
+        <property name="targetMethod" value="catalogsUpdate" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="catalogsUpdateTrigger" 
+    	class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+        <property name="jobDetail" ref="catalogsUpdate" />
+        <property name="repeatInterval" value="5000" />
+    </bean>
+    
+    
+    
+    <bean id="schedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+            </props>
+        </property>
+        <property name="triggers">
+            <list>
+		<ref bean="catalogsUpdateTrigger" />
+            </list>
+        </property>
+       
+    </bean>
+    
+    -->
+   
+</beans>

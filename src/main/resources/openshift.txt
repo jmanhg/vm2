@@ -1,0 +1,64 @@
+mysql -u oposicion -p -h localhost -P 3306 vigilancia < c:\juan\oposicion_31072016.sql
+
+rhc port-forward -a vmprod
+rhc port-forward -a vigilancia
+
+
+rhc tail -a app2
+rhc tail -a vmprod
+
+rhc app-show --gears quota -a app1
+rhc app-show --gears quota -a vmpro2
+
+
+ssh://579ebe3b0c1e666714000005@app2-oposicion.rhcloud.com/~/git/app2.git/
+ssh://57c8b29c2d5271ccec00009e@vigilancia-oposicion.rhcloud.com/~/git/vigilancia.git/
+
+ssh://57d81e1f89f5cff5320000ce@vmprod-oposicion.rhcloud.com/~/git/vmprod.git/
+
+$ rhc git-clone vm2
+$ git add .
+$ git commit -m "command iMac"
+$ git push
+
+
+CREATE USER 'oposicion'@'localhost' IDENTIFIED BY 'o2016$';
+GRANT ALL PRIVILEGES ON *.* TO 'oposicion'@'localhost' WITH GRANT OPTION;
+
+CREATE USER 'oposicion'@'%' IDENTIFIED BY 'o2016$';
+GRANT ALL PRIVILEGES ON *.* TO 'oposicion'@'%' WITH GRANT OPTION;
+
+
+ 
+   mkdir  ~/jbossews/work/Catalina/localhost/vm2/content
+   mkdir  ~/jbossews/work/Catalina/localhost/vm2/content/reportes/
+   cp ~/app-root/runtime/repo/src/add/oposicionRep.jasper ~/jbossews/work/Catalina/localhost/vm2/content/reportes/
+   cp ~/app-root/runtime/repo/src/add/oposicionRepF.jasper ~/jbossews/work/Catalina/localhost/vm2/content/reportes/
+   cp ~/app-root/runtime/repo/src/add/oposicionRepF2.jasper ~/jbossews/work/Catalina/localhost/vm2/content/reportes/
+   mkdir  ~/jbossews/work/Catalina/localhost/vm2/images
+   cp ~/app-root/runtime/repo/src/add/op.png ~/jbossews/work/Catalina/localhost/vm2/images/
+   
+  
+
+help
+
+https://developers.openshift.com/managing-your-applications/common-rhc-commands.html
+
+
+
+requerimientos
+
+- agregar rango de fechas de busqueda
+- rango por ultimo mes por default
+- agregar boton todas las marcas
+- reporte de fonetico 2
+
+
+mysql -u root -p -h 192.168.4.155 --password=FZDres30617  vmpro < ../webapps/sql3/vmpro_all_29092016.sql 
+
+
+DROP VIEW `fonetico`;
+DROP VIEW `perfiles_por_usuario`;
+CREATE  VIEW `fonetico` AS select `gv`.`solicitud` AS `solicitud`,`vv`.`solicitud` AS `solicitudv`,count(0) AS `numF` from (`gacetadatav_viena` `vv` join `gacetadata_viena` `gv`) where ((`vv`.`categoria` = `gv`.`categoria`) and (`vv`.`division` = `gv`.`division`) and (`vv`.`seccion` = `gv`.`seccion`)) group by `gv`.`solicitud`,`vv`.`solicitud`;
+CREATE VIEW `perfiles_por_usuario` AS (select `usuario`.`id` AS `id`,`usuario`.`usuario` AS `usuario`,`perfil`.`codigo_perfil` AS `codigo_perfil` from ((`usuario` join `perfil`) join `usuario_perfil`) where ((`usuario`.`id` = `usuario_perfil`.`id_usuario`) and (`perfil`.`id` = `usuario_perfil`.`id_perfil`)) order by `usuario`.`id`);
+

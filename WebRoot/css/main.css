@@ -1,0 +1,296 @@
+/* 
+    Document   : main
+    Created on : 7/12/2011, 09:43:23 PM
+    Author     : cool2k
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+/**************** HEADER ****************/
+.header{
+	background-color: #FFFFFF; 
+	background-image: url("../img/op.png") ;
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 100%; 
+	max-width: 976px;
+	min-width: 976px;
+	min-height: 80px;
+	max-height: 80px;
+}
+.menus{
+	background-color: #232323;
+	background-image: url('../img/menu_bar.png');
+	background-repeat: repeat-x;
+    height: 28px;
+	margin-top: 0px;
+}
+.menu{
+    /*color:#CACCCE;*/
+    color:#DBDDDF !important;
+    float:left;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 4px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-decoration: none !important;
+	text-transform: uppercase;
+	width: auto;
+}
+.menu a:HOVER{
+    text-decoration: none;
+}
+.menu:HOVER{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-bottom: 4px solid #4697c2;
+}
+.menu-active{
+	border-bottom: 4px solid #E69422;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+.separator:HOVER{
+    padding-top: 6px;
+    padding-bottom: 6px;
+    border-bottom: 0px solid #E69422;
+}
+.menu-active:HOVER{
+    border-bottom: 4px solid #E69422;
+}
+body{
+    font-size: 12pt;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 976px;
+    font-family: Verdana, Helvetica,Arial,Ubuntu, Dejavu Sans ;
+}
+#ligas_interes{
+	width: 200px;
+	background-color: #D9D9D9;
+	font-size: 12px;
+}
+#ligas_interes a{
+	margin-bottom: 15px;
+	padding-left: 5px;
+	width: 100%;
+	float: left;
+	text-align: left;
+	border-left: 2px double #000000;
+}
+#mesa_descripcion{
+	margin-bottom: 15px;
+}
+root {
+    display: block;
+    height: 100%;
+}
+.error{
+    color:red;
+    font-size: 10pt;
+    border-color: transparent;
+}
+.t1{
+  color: #203B7B;
+  font-size: 14pt;
+  font-style: normal;
+  font-weight: bolder;
+  margin-bottom: 35px;
+  text-align: center;
+  text-transform: uppercase;
+  width: 100%;
+}
+.liga a{
+    color: #2758CF;
+    cursor: pointer;
+    font-size: 14pt;
+    text-decoration: none;
+    width: auto;
+}
+.liga a:HOVER{
+    color: #D75B23;
+}
+.dato{
+    float:left;
+    width: 100%;
+}
+.etiqueta{
+    color: #717171;
+    float: right;
+    font-size: 11pt;
+    max-width: 250px;
+    /*width: 250px;*/
+    /*background-color: #D7ECFF;*/
+    padding: 5px;
+    text-align: right;
+    
+}
+.campo{
+    color: #699CC4 ;
+    /*float:left;*/
+    font-size: 11pt;
+    border-radius: 10px;
+    /*width: 250px;*/
+    font-family: Ubuntu,Dejavu Sans,Arial,Verdana,Helvetica;
+    
+}
+.solview{
+	
+}
+.solview tr{
+	padding: 0px;
+	margin: 0px;
+}
+.solview .etiqueta, .solview .campo{
+	font-size: 9pt;
+	padding-top: 1px;
+	padding-bottom:1px;
+}
+.solview .etiqueta{
+}
+.solview .campo{
+}
+.campo30{
+    width: 30px;
+}
+
+.panel2{
+    
+    border: 1px solid #dddddd;
+    /*width: 800px;*/
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+    
+}
+.panelCol70 {
+    width: 70%;
+}
+.panelCol60 {
+    width: 60%;
+}
+.panelCol50 {
+    width: 50%;
+}
+.panelCol40 {
+    width: 40%;
+}
+.panelCol30 {
+    width: 30%;
+}
+.panelCol20 {
+    width: 20%;
+}
+/***********************************************************************************/
+/***********************************************************************************/
+/***********************************************************************************/
+.center-pane{
+    font-size: 12pt;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+.w1{
+    width: 650px;
+}
+.middle-pane{
+    margin-top: auto;
+    margin-bottom: auto;
+    vertical-align: middle;
+}
+.h1{
+    height: 200px;
+}
+
+.button{
+    background: #D7ECFF;
+    border: 1px solid #93BDF7;
+    font-family: Ubuntu,Dejavu Sans,Arial,Verdana,Helvetica;
+    font-size: 11pt;
+}
+
+
+/* **** footer **** */
+.footer{
+    background-color:  #00EB00;
+    font-size: 10pt;
+    font-family: Arial;
+    text-align: center;
+    width:100%;
+}
+.footer a{
+    text-decoration: none; 
+    text-align: center;
+    color: gray;
+}
+.address{
+    /*background-color: #349CC8;*/
+    border-top: 0px solid #9BB4D2;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.address a{
+	color: gray;
+}
+.footer p{
+	text-align: center;
+	margin: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 0px;
+}
+.copyright, .copyright p{
+	text-align: center !important;
+}
+.bottom{
+	text-align: center;
+	background-image: url("../img/pie.jpg") ;
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: 100%; 
+	max-width: 1024px;
+	min-width: 800px;
+	min-height: 128px;
+	max-height: 128px;
+}
+.right-dialog{
+    left: 55% !important;
+}
+.left-dialog{
+    left: 10% !important;
+}
+.ui-message-error {
+    position: absolute;
+    margin: -12px 10px;
+}
+
+.etiquetaGrupo {
+font-weight: bold;
+font-size: 12pt;
+font-family: Verdana, Helvetica,Arial,Ubuntu, Dejavu Sans;
+}
+
+.estado{
+	font-size: 9px;
+	color: #6767AB;
+	vertical-align: middle;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 2px;
+	text-transform: uppercase;
+}
+
+.login{
+	padding-left: 120px;
+	padding-top: 50px;
+	padding-bottom: 10px;
+	width: 600px;
+	border-color: transparent;
+}

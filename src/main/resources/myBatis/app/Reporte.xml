@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="mx.com.oposicion.persistence.ReporteMapper">
+
+
+	<sql id="camposReporte">
+                        idRep,
+                        nombre,
+                        fecha,
+                        tipo,
+                        numRegs,
+                        activo,
+                        idusuario
+        </sql>
+
+
+    <resultMap id="reporteMap" type="ReporteType" >
+        <result property="idRep" column="idRep"/>
+        <result property="nombre" column="nombre"/>
+        <result property="fecha" column="fecha"/>
+        <result property="tipo" column="tipo"/>
+        <result property="numRegs" column="numRegs"/>
+        <result property="activo" column="activo"/>
+        <result property="idusuario" column="idusuario"/>
+    </resultMap>
+
+
+    <select id="findById" resultMap="reporteMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposReporte"/>
+		FROM 
+			reporte
+		WHERE 
+			idRep=#{idRep}
+                        and activo=1
+    </select>
+    <select id="findByIdUsuario" resultMap="reporteMap" parameterType="java.lang.Integer">
+		SELECT 
+			<include refid="camposReporte"/>
+		FROM 
+			reporte
+		WHERE 
+			idusuario=#{idusuario}
+                        and activo=1
+    </select>
+
+    <select id="getAll" resultMap="reporteMap">
+		SELECT 
+			<include refid="camposReporte"/>
+		FROM 
+			reporte 
+                WHERE activo=1
+    </select>
+
+
+	<insert id="insert" parameterType="ReporteType">
+		INSERT INTO reporte( <include refid="camposReporte"/> )
+ 		VALUES(
+ 			null,
+			#{nombre},
+                        sysdate(),
+                        #{tipo},
+                        #{numRegs},
+                        #{activo},
+                        #{idusuario}
+                
+		)	
+		<selectKey keyProperty="idRep" resultType="int">
+			SELECT last_insert_id() AS idRep
+		</selectKey>
+    </insert>
+
+
+	<update id="update" parameterType="ReporteType">
+			UPDATE reporte SET
+				nombre=#{nombre},
+                                fecha=sysdate(),
+                                tipo=#{tipo},
+                                numRegs=#{numRegs},
+                                activo=#{activo},
+                                idusuario=#{idusuario}
+			WHERE
+              	idRep = #{idRep}
+    </update>
+
+
+	<update id="delete" parameterType="ReporteType">
+			UPDATE reporte SET
+				activo = 0
+			WHERE
+              	idRep = #{idRep}
+    </update>
+
+
+</mapper>

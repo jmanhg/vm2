@@ -1,0 +1,30 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../support/templates/PlainTemplate.xhtml">
+<script type="text/javascript">
+
+window.onbeforeunload = cierra;
+function cierra() {
+    
+            if(session!=null) { 
+            session.invalidate();   
+           return;
+}
+}
+        </script>
+    <ui:define name="pageName">Sessión concurrente</ui:define>
+    <ui:define name="content">
+        <f:view>
+                <p:panel style="width:400px;">
+                    <h:form prependId="false">
+                        Sessión concurrente
+                    </h:form>
+                </p:panel>
+        </f:view>
+
+    </ui:define>
+
+</ui:composition>
